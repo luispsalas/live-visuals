@@ -1,0 +1,54 @@
+# Live Visuals
+
+A lightweight, browser-based **audio-reactive visual instrument** for live performance.
+Run it next to Ableton Live: it listens to your audio and projects generative visuals
+full-screen on a second display, driven live from the keyboard or an Akai MPD26.
+
+Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control panel**
+(keep on the laptop, beside Ableton) and a clean **output window** (send to the projector).
+
+> Early and evolving; built to grow progressively.
+
+## Quick start
+
+1. Install [BlackHole 2ch](https://existential.audio/blackhole/). In *Audio MIDI Setup*
+   make a **Multi-Output Device** (BlackHole + your speakers) and set it as Ableton's
+   output, so you still hear sound.
+2. `npm install && npm run dev`, then open the printed URL in **Chrome**.
+   Click **Refresh → pick BlackHole → Start**.
+3. Click **Open output window →**, drag it onto your projector (extended display),
+   and press **f** for fullscreen.
+
+The in-app **How to run** panel has the full checklist.
+
+## Controls
+
+- **Audio** — choose the input (BlackHole), Start, watch the bass/mid/treble/RMS meters and detected tempo.
+- **Mix & effects** — two visual **sources** (A/B) with a **crossfade**; **hue/sat** colour; **feedback** trails, **RGB shift**, **glitch**; a **Reactivity** mode (Punchy → Smooth → Mellow → Ambient → None) setting how strongly transients drive motion; plus **camera** and **video-file** inputs.
+- **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **luma key** (reveal one feed through another's brightness — or through the feedback buffer).
+- **BPM loops** — tempo-synced motion as counterpoint to the audio reactivity: set the **BPM** (or Tap), then loop Hue / Sat / Crossfade / Feedback / Key over ¼-beat–8-bar cycles, with ramp / sine / triangle / square shapes.
+- **My presets** — save and recall full looks (stored in the browser; number keys **1–8** fire the first eight; each is MIDI-mappable).
+- **MIDI (Akai MPD26)** — Connect, then **Learn** any parameter or preset onto a pad or knob.
+- **Output** — open the projector window and set **Quality** (render scale) for GPU headroom.
+
+**Generative sources:** Plasma, Flow field, Kaleidoscope, Tunnel, Metaballs, Voronoi, Julia, Interference — plus live Camera and Video file.
+
+## Recommendations
+
+- **Share the screen with Ableton:** the panel is a slim vertical column when the window is narrow, and flows into multiple columns when wide — just resize.
+- **For tight sync,** type or tap the BPM rather than trusting the drifting auto-estimate.
+- **Layer motion:** let transients drive zoom/brightness while a slow BPM loop drifts the colour — two rhythms read as more musical than one.
+- **On a 4K projector or if frames drop,** lower **Quality** to ~60–75% and keep the laptop plugged in.
+- **Sharing the MPD26 with Ableton:** map the app to one pad bank and Ableton (Cmd+M) to the other, so they don't collide.
+
+## Techniques to try
+
+- **Keyed feeds:** Source A generative, Source B camera/video, **Screen** blend, luma-key **from Feedback** → smeary, self-referential mattes.
+- **Difference / Multiply** two generative sources for rich moiré-like overlaps.
+- **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.
+
+## Tech
+
+Vite + Three.js. The control window analyses audio and streams state to the output
+window over a `BroadcastChannel`; the output window owns the WebGL renderer. Audio
+analysis runs on a Web Audio clock so reactivity survives fullscreen.

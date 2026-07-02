@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live Visuals — Output</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+      /* In fullscreen the <html> element is the fullscreen target. */
+      html:fullscreen { cursor: none; }
+      html:fullscreen #fs { display: none; } /* button is useless once fullscreen */
+      #view { display: block; width: 100vw; height: 100vh; }
+      #fs {
+        position: fixed; top: 8px; right: 8px;
+        background: rgba(0, 0, 0, 0.5); color: #fff;
+        border: 1px solid #555; border-radius: 6px;
+        padding: 6px 10px; font: 12px system-ui; cursor: pointer;
+        opacity: 0.15;
+      }
+      #fs:hover { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+    <button id="fs">Fullscreen (f)</button>
+    <script type="module" src="/src/output.js"></script>
+  </body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live Visuals — Control</title>
+    <style>
+      :root {
+        --bg: #0f1012;
+        --module: #1b1c20;
+        --border: #2b2d33;
+        --text: #e8e8ea;
+        --muted: #9aa0aa;
+        --accent: #6ea8fe;
+        --field: #24262b;
+      }
+      * { box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 16px; }
+      /* Responsive: one slim column on a narrow window (to share the screen with
+         Ableton), flowing into multiple columns as the window gets wider. */
+      .panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; align-items: start; }
+      .panel > h1 { grid-column: 1 / -1; margin: 0; }
+      h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
+
+      .module { background: var(--module); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-width: 0; }
+      .module > h2 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+      .row { margin: 8px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .row:last-child { margin-bottom: 0; }
+      label { width: 62px; flex: 0 0 auto; font-size: 12px; color: var(--muted); }
+
+      button, select, input[type="range"], input[type="number"], input[type="text"] {
+        background: var(--field); color: var(--text); border: 1px solid var(--border);
+        border-radius: 7px; padding: 7px 10px; font-size: 12px; cursor: pointer;
+      }
+      input[type="number"], input[type="text"] { cursor: text; }
+      button:hover { background: #2e3138; border-color: #3a3d45; }
+      .row > select, .row > input[type="range"], .row > input[type="number"] { flex: 1 1 120px; min-width: 0; }
+      input[type="range"] { padding: 0; accent-color: var(--accent); }
+      input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+
+      .meter { height: 10px; background: #0c0d0f; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex: 1 1 auto; }
+      .meter > span { display: block; height: 100%; width: 0; transition: width 0.05s linear; }
+      .meter.bass > span { background: #ff5c6c; }
+      .meter.mid > span { background: #ffd166; }
+      .meter.treble > span { background: #4cc9f0; }
+      .meter.rms > span { background: #80ffb0; }
+
+      #status { color: var(--accent); font-size: 12px; }
+      #bpm-detected, #midi-status { font-size: 11px; color: var(--muted); }
+      #bpm-input { flex: 0 0 72px; }
+
+      #user-presets { gap: 6px; }
+      .user-preset { display: inline-flex; align-items: center; margin: 0 6px 6px 0; }
+      .user-preset button { font-size: 12px; padding: 6px 8px; }
+      .user-preset > button:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+      .user-preset .learn { color: var(--accent); font-size: 11px; padding: 6px 7px; border-left: none; border-radius: 0; }
+      .user-preset .del { color: #ff8080; padding: 6px 8px; border-left: none; border-radius: 0 7px 7px 0; }
+
+      .midi-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; font-size: 12px; }
+      .midi-label { width: 84px; flex: 0 0 auto; color: var(--muted); }
+      .midi-row button { padding: 4px 8px; font-size: 11px; }
+      .midi-bind { color: var(--accent); font-size: 11px; margin-left: auto; }
+
+      .loop-row { display: flex; align-items: center; gap: 6px; margin: 6px 0; }
+      .loop-label { width: 58px; flex: 0 0 auto; font-size: 12px; color: var(--muted); }
+      .loop-row select { flex: 0 1 auto; min-width: 0; font-size: 11px; padding: 4px 5px; }
+      .loop-depth { flex: 1 1 54px; min-width: 44px; }
+
+      details { color: #c9c9cd; font-size: 12px; }
+      details summary { cursor: pointer; color: var(--accent); }
+      details ol { line-height: 1.6; padding-left: 18px; }
+      details code { background: var(--field); padding: 1px 5px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <h1>Live Visuals — Control</h1>
+
+      <section class="module">
+        <h2>Audio</h2>
+        <div class="row">
+          <select id="inputs"></select>
+          <button id="refresh">Refresh</button>
+          <button id="start">Start</button>
+        </div>
+        <div class="row"><span id="status"></span></div>
+        <div class="row"><label>Bass</label><div class="meter bass"><span id="m-bass"></span></div></div>
+        <div class="row"><label>Mid</label><div class="meter mid"><span id="m-mid"></span></div></div>
+        <div class="row"><label>Treble</label><div class="meter treble"><span id="m-treble"></span></div></div>
+        <div class="row"><label>RMS</label><div class="meter rms"><span id="m-rms"></span></div></div>
+        <div class="row"><label>Tempo</label><span id="bpm">–</span></div>
+      </section>
+
+      <section class="module">
+        <h2>Mix &amp; effects</h2>
+        <div class="row"><label>Source A</label><select id="slot-a"></select></div>
+        <div class="row"><label>Source B</label><select id="slot-b"></select></div>
+        <div class="row"><label>Crossfade</label><input id="mix" type="range" min="0" max="1" step="0.01" value="0" /></div>
+        <div class="row"><label>Hue</label><input id="hue" type="range" min="0" max="1" step="0.01" value="0" /></div>
+        <div class="row"><label>Sat</label><input id="sat" type="range" min="0" max="1.5" step="0.01" value="1" /></div>
+        <div class="row"><label>Feedback</label><input id="feedback" type="range" min="0" max="0.98" step="0.01" value="0" /></div>
+        <div class="row"><label>RGB shift</label><input id="rgb-shift" type="range" min="0" max="0.02" step="0.001" value="0" /></div>
+        <div class="row"><label>Glitch</label><input id="glitch" type="range" min="0" max="1" step="0.01" value="0" /></div>
+        <div class="row"><label>Reactivity</label><select id="reactivity"></select></div>
+        <div class="row"><label>Inputs</label><button id="camera">Camera: off</button><input id="video-file" type="file" accept="video/*" /></div>
+      </section>
+
+      <section class="module">
+        <h2>Compositing (overlap &amp; keying)</h2>
+        <div class="row"><label>Blend</label><select id="blend"></select></div>
+        <div class="row"><label>Luma key</label><input id="key-on" type="checkbox" /><label style="width:auto">from</label><select id="key-source"></select><label style="width:auto">invert</label><input id="key-invert" type="checkbox" /></div>
+        <div class="row"><label>Key thresh</label><input id="key-threshold" type="range" min="0" max="1" step="0.01" value="0.5" /></div>
+        <div class="row"><label>Key soft</label><input id="key-softness" type="range" min="0" max="0.5" step="0.01" value="0.1" /></div>
+      </section>
+
+      <section class="module">
+        <h2>BPM loops (counterpoint motion)</h2>
+        <div class="row">
+          <label>BPM</label>
+          <input id="bpm-input" type="number" min="20" max="300" step="0.1" />
+          <button id="bpm-tap">Tap</button>
+          <button id="bpm-sync" title="Re-align loop phase to now">Sync</button>
+          <span id="bpm-detected"></span>
+        </div>
+        <div id="loops"></div>
+      </section>
+
+      <section class="module">
+        <h2>My presets (keys 1–8 = first 8)</h2>
+        <div class="row"><input id="save-name" type="text" placeholder="preset name" /><button id="save-preset">Save current</button></div>
+        <div class="row" id="user-presets"></div>
+      </section>
+
+      <section class="module">
+        <h2>MIDI (Akai MPD26)</h2>
+        <div class="row"><button id="midi-connect">Connect MIDI</button><button id="midi-reset">Reset mappings</button><span id="midi-status"></span></div>
+        <div id="midi-map"></div>
+      </section>
+
+      <section class="module">
+        <h2>Output</h2>
+        <div class="row"><button id="open-output">Open output window →</button></div>
+        <div class="row"><label>Quality</label><input id="quality" type="range" min="0.25" max="1" step="0.05" value="1" /><span id="quality-val">100%</span></div>
+      </section>
+
+      <section class="module">
+        <h2>How to run</h2>
+        <details>
+          <summary>Show setup &amp; usage</summary>
+          <ol>
+            <li><b>Audio routing (once):</b> install <b>BlackHole 2ch</b>. In <i>Audio MIDI Setup</i> create a <b>Multi-Output Device</b> (tick BlackHole + your speakers/interface) and set it as Ableton's output — so you still hear sound while the app reads BlackHole.</li>
+            <li><b>Start:</b> open this page in <b>Chrome</b>. Click <code>Refresh</code>, pick <b>BlackHole</b>, then <code>Start</code>. Play a clip in Ableton — the meters should move.</li>
+            <li><b>Project:</b> click <code>Open output window →</code>, drag it onto your projector (extended display, not mirrored), and press <code>f</code> for fullscreen. Keep this control window visible on the laptop.</li>
+            <li><b>Perform:</b> pick sources A/B + crossfade, tweak colour/effects, choose a <b>Reactivity</b> mode. Set <b>BPM</b> (or <code>Tap</code>) and enable <b>BPM loops</b> for tempo-synced counterpoint motion.</li>
+            <li><b>Presets:</b> <code>Save current</code> names a look (recall with its button, keys <b>1–8</b> for the first eight, or a learned MPD26 pad).</li>
+            <li><b>MIDI (optional):</b> <code>Connect MIDI</code>, then <code>Learn</code> next to a parameter or preset and move/press a control. <code>Reset mappings</code> clears all.</li>
+            <li><b>Quality:</b> the <b>Quality</b> slider under Output scales the internal render resolution (100% = full). On a big/4K projector or if frames drop, lower it (e.g. 60–75%) for GPU headroom — visuals get slightly softer but run smoother. It's a per-machine setting, not saved in presets. Also keep the laptop <b>plugged in</b> to avoid GPU power-throttling.</li>
+          </ol>
+        </details>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
