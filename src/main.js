@@ -45,6 +45,8 @@ let bpmLocked = false;
 let phaseStart = performance.now() / 1000; // loop phase origin (re-aligned by Tap/Sync)
 let tapTimes = [];
 let quality = 1; // render-scale, per-machine perf setting (kept out of presets)
+let noSoundActive = false;
+let noSoundRafId = null;
 const loopRowEls = []; // DOM refs per loop row, indexed alongside state.loops
 
 const el = (id) => document.getElementById(id);
@@ -80,6 +82,7 @@ const ui = {
   userPresets: el('user-presets'),
   quality: el('quality'),
   qualityVal: el('quality-val'),
+  noSound: el('no-sound'),
   midiConnect: el('midi-connect'),
   midiReset: el('midi-reset'),
   midiStatus: el('midi-status'),
@@ -383,6 +386,7 @@ async function refreshInputs() {
 }
 
 async function start() {
+  stopNoSound();
   try {
     const analyser = await audio.start(ui.inputs.value);
     features = new Features(analyser, audio.sampleRate);
@@ -391,6 +395,30 @@ async function start() {
   } catch (e) {
     ui.status.textContent = `Could not start audio: ${e.message}`;
   }
+}
+
+const STATIC_FEATURES = { bass: 0.4, mid: 0.4, treble: 0.4, rms: 0.35, onset: false, onsetEnv: 0, bpm: 0 };
+
+function noSoundFrame() {
+  if (!noSoundActive) return;
+  const now = performance.now() / 1000;
+  channel.send('features', STATIC_FEATURES);
+  sendLoopDynamics(now);
+  noSoundRafId = requestAnimationFrame(noSoundFrame);
+}
+
+function startNoSound() {
+  noSoundActive = true;
+  ui.noSound.textContent = 'No sound: on';
+  ui.status.textContent = 'No sound mode — engine running, BPM loops active.';
+  noSoundFrame();
+}
+
+function stopNoSound() {
+  if (!noSoundActive) return;
+  noSoundActive = false;
+  cancelAnimationFrame(noSoundRafId);
+  ui.noSound.textContent = 'No sound';
 }
 
 // Called from the audio thread each block (not requestAnimationFrame), so it keeps
@@ -431,6 +459,7 @@ channel.on((type) => {
 // --- Panel wiring ---
 ui.refresh.addEventListener('click', refreshInputs);
 ui.start.addEventListener('click', start);
+ui.noSound.addEventListener('click', () => { if (noSoundActive) stopNoSound(); else startNoSound(); });
 ui.openOutput.addEventListener('click', () => {
   outputWin = window.open('/output.html', 'live-visuals-output', 'width=1280,height=720');
 });

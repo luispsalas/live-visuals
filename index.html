@@ -83,6 +83,7 @@
           <select id="inputs"></select>
           <button id="refresh">Refresh</button>
           <button id="start">Start</button>
+          <button id="no-sound">No sound</button>
         </div>
         <div class="row"><span id="status"></span></div>
         <div class="row"><label>Bass</label><div class="meter bass"><span id="m-bass"></span></div></div>
@@ -96,6 +97,7 @@
         <h2>Mix &amp; effects</h2>
         <div class="row"><label>Source A</label><select id="slot-a"></select></div>
         <div class="row"><label>Source B</label><select id="slot-b"></select></div>
+        <div class="row"><label>Inputs</label><button id="camera">Camera: off</button><input id="video-file" type="file" accept="video/*" /></div>
         <div class="row"><label>Crossfade</label><input id="mix" type="range" min="0" max="1" step="0.01" value="0" /></div>
         <div class="row"><label>Hue</label><input id="hue" type="range" min="0" max="1" step="0.01" value="0" /></div>
         <div class="row"><label>Sat</label><input id="sat" type="range" min="0" max="1.5" step="0.01" value="1" /></div>
@@ -103,7 +105,6 @@
         <div class="row"><label>RGB shift</label><input id="rgb-shift" type="range" min="0" max="0.02" step="0.001" value="0" /></div>
         <div class="row"><label>Glitch</label><input id="glitch" type="range" min="0" max="1" step="0.01" value="0" /></div>
         <div class="row"><label>Reactivity</label><select id="reactivity"></select></div>
-        <div class="row"><label>Inputs</label><button id="camera">Camera: off</button><input id="video-file" type="file" accept="video/*" /></div>
       </section>
 
       <section class="module">
