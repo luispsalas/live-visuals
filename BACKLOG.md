@@ -26,5 +26,10 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - **OSC / Ableton Link bridge** — exact beat/tempo from a standalone Max patch (Link)
   over OSC → WebSocket, to replace the drifting onset-based BPM estimate.
 
+## Demo & documentation
+- ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
+  "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
+  audio). Workflow documented in README → "Recording a demo".
+
 ## Housekeeping
 - Choose a licence before any wider sharing.

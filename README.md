@@ -47,6 +47,22 @@ The in-app **How to run** panel has the full checklist.
 - **Difference / Multiply** two generative sources for rich moiré-like overlaps.
 - **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.
 
+## Recording a demo
+
+Use **OBS Studio** with the pre-configured **"Live Visuals Demo"** scene collection and
+**"Live Visuals"** profile (1080p / 60 fps, Apple hardware H.264, crash-safe MP4 to `~/Movies`,
+audio straight from BlackHole — the same feed the app analyzes).
+
+1. Start the app and open the output window (it can stay windowed — no need for fullscreen).
+2. Open OBS. In the **Demo** scene, double-click **Output window** and pick the Chrome
+   window titled *Live Visuals — Output* (once per session; grant Screen Recording
+   permission the first time).
+3. Play in Ableton — the audio meter should move. Click **Start Recording**, perform,
+   **Stop Recording**. The MP4 lands in `~/Movies`.
+
+Tip: keep the output window at a decent size — OBS scales the capture to fit the
+1080p frame, so a tiny window means a soft recording.
+
 ## Tech
 
 Vite + Three.js. The control window analyses audio and streams state to the output
