@@ -30,6 +30,15 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   values (98/99) in manifest.js so adding generative sources never shifts them; old
   presets migrate 8/9 → 98/99 on load.
 
+## Sources & FX (continued)
+- **Text input as a visual layer** — review adding live text as a source/overlay
+  (titles, lyrics, messages). Decisions to weigh: render approach (canvas-2D texture
+  → GPU vs an HTML overlay on the output window), where it sits in the pipeline (its
+  own slot so it can be blended/keyed like any feed, vs a post overlay on top of
+  everything), font/size/color/position controls, and whether it can be audio-reactive
+  or BPM-looped (e.g. pulse, flicker). Slot-based fits the existing compositor cleanly
+  and lets you luma-key a camera through the letterforms.
+
 ## Sync
 - **OSC / Ableton Link bridge** — exact beat/tempo from a standalone Max patch (Link)
   over OSC → WebSocket, to replace the drifting onset-based BPM estimate.
