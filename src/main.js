@@ -6,6 +6,7 @@ import { BLEND_MODES, KEY_SOURCES } from './engine/compositor.js';
 import { MidiInput } from './control/midi.js';
 import { DIVISIONS, SHAPES, shapeValue } from './control/loops.js';
 import { listUserPresets, saveUserPreset, removeUserPreset } from './control/userPresets.js';
+import { attachRenderer } from './engine/attachRenderer.js';
 import { createChannel } from './sync.js';
 
 // Control window (laptop): captures audio, computes + shapes features, shows the
@@ -55,6 +56,8 @@ const ui = {
   refresh: el('refresh'),
   start: el('start'),
   openOutput: el('open-output'),
+  modeNote: el('mode-note'),
+  previewCanvas: el('preview-canvas'),
   slotA: el('slot-a'),
   slotB: el('slot-b'),
   mix: el('mix'),
@@ -460,9 +463,32 @@ channel.on((type) => {
 ui.refresh.addEventListener('click', refreshInputs);
 ui.start.addEventListener('click', start);
 ui.noSound.addEventListener('click', () => { if (noSoundActive) stopNoSound(); else startNoSound(); });
+
+// Design mode (default): inline preview + sidebar. Perform mode (output window
+// open): preview hidden + paused (no double GPU work), panel returns to the slim
+// card grid that shares the screen with Ableton. Closing the output window (or
+// opening the panel fresh) returns to design mode automatically.
+const preview = attachRenderer(ui.previewCanvas);
+
+function setPerformMode(on) {
+  document.body.classList.toggle('perform', on);
+  preview.setPaused(on);
+  ui.modeNote.textContent = on
+    ? 'Perform mode — visuals live in the output window; close it to return to design mode.'
+    : 'Design mode — visuals render in the preview.';
+}
+
 ui.openOutput.addEventListener('click', () => {
   outputWin = window.open('/output.html', 'live-visuals-output', 'width=1280,height=720');
+  setPerformMode(true);
 });
+
+// Detect the output window closing (there's no cross-window close event).
+setInterval(() => {
+  if (document.body.classList.contains('perform') && (!outputWin || outputWin.closed)) {
+    setPerformMode(false);
+  }
+}, 1000);
 
 ui.slotA.addEventListener('change', () => { state.slotA = parseInt(ui.slotA.value, 10); sendState(); });
 ui.slotB.addEventListener('change', () => { state.slotB = parseInt(ui.slotB.value, 10); sendState(); });

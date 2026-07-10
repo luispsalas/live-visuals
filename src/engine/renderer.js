@@ -9,6 +9,7 @@ import { FeedbackPass } from './feedbackPass.js';
 // must match manifest.js: generative sources first, then camera, then video.
 export class Renderer {
   constructor(canvas) {
+    this.canvas = canvas;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.quality = 1; // internal render-scale (1 = full; lower = more headroom)
 
@@ -28,11 +29,15 @@ export class Renderer {
     });
 
     this.resize();
+    // Size from the canvas element (not the window), so the same class drives the
+    // fullscreen output window and the inline design-mode preview.
     window.addEventListener('resize', () => this.resize());
+    new ResizeObserver(() => this.resize()).observe(canvas);
   }
 
   resize() {
-    const w = window.innerWidth, h = window.innerHeight;
+    const w = this.canvas.clientWidth || window.innerWidth;
+    const h = this.canvas.clientHeight || window.innerHeight;
     // Effective pixel ratio, scaled by the quality setting, applied everywhere.
     const pr = Math.min(window.devicePixelRatio, 2) * this.quality;
     this.renderer.setPixelRatio(pr);

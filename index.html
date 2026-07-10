@@ -15,12 +15,28 @@
         --field: #24262b;
       }
       * { box-sizing: border-box; }
-      body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 16px; }
-      /* Responsive: one slim column on a narrow window (to share the screen with
-         Ableton), flowing into multiple columns as the window gets wider. */
-      .panel { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; align-items: start; }
-      .panel > h1 { grid-column: 1 / -1; margin: 0; }
+      body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
       h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
+
+      /* Top bar: title, mode note, and the perform-mode switch. */
+      #topbar { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+      #mode-note { font-size: 11px; color: var(--muted); margin-right: auto; }
+
+      /* Design mode (default): live preview left, scrollable control sidebar right. */
+      #layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px; padding: 14px; }
+      #preview-pane { background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; align-self: start; }
+      #preview-canvas { display: block; width: 100%; aspect-ratio: 16 / 9; }
+      #sidebar { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+
+      /* Narrow window: preview stacks above the controls. */
+      @media (max-width: 900px) { #layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } }
+
+      /* Perform mode (output window open): preview hidden, panel becomes the
+         original slim responsive card grid to share the screen with Ableton. */
+      body.perform { overflow: auto; display: block; height: auto; min-height: 100vh; }
+      body.perform #preview-pane { display: none; }
+      body.perform #layout { display: block; max-width: 1200px; margin: 0 auto; }
+      body.perform #sidebar { overflow: visible; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); align-items: start; }
 
       .module { background: var(--module); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; min-width: 0; }
       .module > h2 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
@@ -74,9 +90,16 @@
     </style>
   </head>
   <body>
-    <div class="panel">
-      <h1>Live Visuals — Control</h1>
+    <header id="topbar">
+      <h1>Live Visuals</h1>
+      <span id="mode-note">Design mode — visuals render in the preview.</span>
+      <button id="open-output">Open output window →</button>
+    </header>
 
+    <div id="layout">
+      <div id="preview-pane"><canvas id="preview-canvas"></canvas></div>
+
+      <aside id="sidebar">
       <section class="module">
         <h2>Audio</h2>
         <div class="row">
@@ -141,7 +164,6 @@
 
       <section class="module">
         <h2>Output</h2>
-        <div class="row"><button id="open-output">Open output window →</button></div>
         <div class="row"><label>Quality</label><input id="quality" type="range" min="0.25" max="1" step="0.05" value="1" /><span id="quality-val">100%</span></div>
       </section>
 
@@ -160,6 +182,7 @@
           </ol>
         </details>
       </section>
+      </aside>
     </div>
 
     <script type="module" src="/src/main.js"></script>
