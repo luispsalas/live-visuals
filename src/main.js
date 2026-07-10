@@ -112,11 +112,12 @@ const PARAMS = {
   keySoftness:  { min: 0, max: 0.5,  el: ui.keySoftness,  label: 'Key soft' },
 };
 
-// Populate slot selectors from the shared source manifest.
+// Populate slot selectors from the shared source manifest. Option values are the
+// manifest's pinned slot values (camera/video stay stable as sources are added).
 for (const sel of [ui.slotA, ui.slotB]) {
-  SOURCE_LIST.forEach((src, i) => {
+  SOURCE_LIST.forEach((src) => {
     const opt = document.createElement('option');
-    opt.value = String(i);
+    opt.value = String(src.value);
     opt.textContent = src.name;
     sel.appendChild(opt);
   });
@@ -286,7 +287,7 @@ function renderUserPresets() {
     learn.className = 'learn';
     const label = midi.bindingLabel(target);
     learn.textContent = label === 'unmapped' ? 'MIDI' : label;
-    learn.title = 'Learn a MIDI pad for this preset';
+    learn.title = 'Learn a MIDI pad/key for this preset';
     learn.addEventListener('click', (e) => {
       e.stopPropagation();
       midi.startLearn(target);
@@ -362,9 +363,9 @@ ui.midiConnect.addEventListener('click', async () => {
 });
 
 ui.midiReset.addEventListener('click', () => {
-  if (!confirm('Reset ALL MIDI mappings?\n\nThis clears every learned pad and CC binding (factory presets, parameters, and saved presets). This cannot be undone.')) return;
+  if (!confirm('Reset ALL MIDI mappings?\n\nThis clears every learned note and CC binding (parameters and saved presets). This cannot be undone.')) return;
   midi.clearAll();
-  refreshMidiLabels();   // factory preset + param rows back to "unmapped"
+  refreshMidiLabels();   // param rows back to "unmapped"
   renderUserPresets();   // saved-preset buttons back to "MIDI"
 });
 
@@ -465,16 +466,17 @@ ui.start.addEventListener('click', start);
 ui.noSound.addEventListener('click', () => { if (noSoundActive) stopNoSound(); else startNoSound(); });
 
 // Design mode (default): inline preview + sidebar. Perform mode (output window
-// open): preview hidden + paused (no double GPU work), panel returns to the slim
-// card grid that shares the screen with Ableton. Closing the output window (or
-// opening the panel fresh) returns to design mode automatically.
+// open): the panel returns to the slim card grid that shares the screen with
+// Ableton, and the preview shrinks to a low-power corner monitor (15 fps, half
+// resolution) so it costs almost nothing next to the real output. Closing the
+// output window returns to design mode automatically.
 const preview = attachRenderer(ui.previewCanvas);
 
 function setPerformMode(on) {
   document.body.classList.toggle('perform', on);
-  preview.setPaused(on);
+  preview.setLowPower(on);
   ui.modeNote.textContent = on
-    ? 'Perform mode — visuals live in the output window; close it to return to design mode.'
+    ? 'Perform mode — output window is live; corner preview mirrors it at low power. Close the output window to return.'
     : 'Design mode — visuals render in the preview.';
 }
 

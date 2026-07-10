@@ -1,13 +1,16 @@
-// Web MIDI input for the Akai MPD26 (or any controller).
+// Web MIDI input — controller-agnostic. Anything that sends Note On (pads on a
+// pad controller, keys on a MIDI keyboard) can trigger presets; anything that
+// sends CC (knobs, faders, mod wheel) can drive parameters 0..1. All connected
+// inputs are listened to at once, so multiple devices work simultaneously.
 //
 // Bindings map an exact MIDI message (type + number) to a target:
-//   - preset target  -> a pad (Note On)  selects a preset
-//   - param target   -> a knob/fader (CC) drives a parameter 0..1
+//   - preset target  -> a pad/key (Note On) selects a preset
+//   - param target   -> a knob/fader (CC)   drives a parameter 0..1
 //
 // Because bindings are tied to specific note/CC numbers, the app only reacts to
-// the controls you actually learn here. That's how it shares the MPD26 with
-// Ableton without collision: learn the app to one pad bank, map Ableton to the
-// other (see README). No MIDI-channel filtering needed.
+// the controls you actually learn here. That's how it shares a controller with
+// Ableton without collision: learn the app to controls Ableton doesn't use
+// (e.g. one pad bank vs the other — see README).
 
 const STORAGE_KEY = 'live-visuals-midi';
 const NOTE_ON = 0x90;
@@ -56,7 +59,7 @@ export class MidiInput {
     for (const [key, t] of Object.entries(this.bindings)) {
       if (this._sameTarget(t, target)) {
         const [type, num] = key.split(',').map(Number);
-        return `${type === NOTE_ON ? 'pad' : 'CC'} ${num}`;
+        return `${type === NOTE_ON ? 'note' : 'CC'} ${num}`;
       }
     }
     return 'unmapped';
@@ -92,7 +95,7 @@ export class MidiInput {
     const type = status & 0xf0;
 
     if (this.learnTarget) {
-      // Pads (Note On) bind presets; CCs bind params.
+      // Pads/keys (Note On) bind presets; CCs bind params.
       const want = this.learnTarget.kind === 'param' ? CC : NOTE_ON;
       if (type !== want) return;
       // Clear any previous binding to this target, then set the new one.

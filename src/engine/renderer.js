@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { ShaderSource } from './sources/shaderSource.js';
 import { TextureSource } from './sources/textureSource.js';
 import { GENERATIVE } from './sources/generative.js';
+import { CAMERA_INDEX, VIDEO_INDEX } from './sources/manifest.js';
 import { Compositor } from './compositor.js';
 import { FeedbackPass } from './feedbackPass.js';
 
@@ -58,9 +59,20 @@ export class Renderer {
     this.feedback.setFeatures(f);
   }
 
+  // Slot values from the UI use pinned indices for camera/video (see manifest.js);
+  // translate them to positions in the actual sources array.
+  _sourceIndex(v) {
+    if (v === CAMERA_INDEX) return this.sources.length - 2;
+    if (v === VIDEO_INDEX) return this.sources.length - 1;
+    return Math.min(v, GENERATIVE.length - 1);
+  }
+
   setState(s) {
     if (s.slotA !== undefined || s.slotB !== undefined) {
-      this.compositor.setSlots(s.slotA, s.slotB);
+      this.compositor.setSlots(
+        s.slotA !== undefined ? this._sourceIndex(s.slotA) : undefined,
+        s.slotB !== undefined ? this._sourceIndex(s.slotB) : undefined,
+      );
     }
     if (s.mix !== undefined) this.compositor.setMix(s.mix);
     this.compositor.setState(s);

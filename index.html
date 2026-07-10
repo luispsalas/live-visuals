@@ -31,10 +31,11 @@
       /* Narrow window: preview stacks above the controls. */
       @media (max-width: 900px) { #layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } }
 
-      /* Perform mode (output window open): preview hidden, panel becomes the
-         original slim responsive card grid to share the screen with Ableton. */
+      /* Perform mode (output window open): the panel becomes the original slim
+         responsive card grid to share the screen with Ableton, and the preview
+         shrinks to a fixed low-power corner monitor. */
       body.perform { overflow: auto; display: block; height: auto; min-height: 100vh; }
-      body.perform #preview-pane { display: none; }
+      body.perform #preview-pane { position: fixed; right: 14px; bottom: 14px; width: 240px; z-index: 10; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55); }
       body.perform #layout { display: block; max-width: 1200px; margin: 0 auto; }
       body.perform #sidebar { overflow: visible; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); align-items: start; }
 
@@ -157,7 +158,7 @@
       </section>
 
       <section class="module">
-        <h2>MIDI (Akai MPD26)</h2>
+        <h2>MIDI (any controller)</h2>
         <div class="row"><button id="midi-connect">Connect MIDI</button><button id="midi-reset">Reset mappings</button><span id="midi-status"></span></div>
         <div id="midi-map"></div>
       </section>
@@ -176,8 +177,8 @@
             <li><b>Start:</b> open this page in <b>Chrome</b>. Click <code>Refresh</code>, pick <b>BlackHole</b>, then <code>Start</code>. Play a clip in Ableton — the meters should move.</li>
             <li><b>Project:</b> click <code>Open output window →</code>, drag it onto your projector (extended display, not mirrored), and press <code>f</code> for fullscreen. Keep this control window visible on the laptop.</li>
             <li><b>Perform:</b> pick sources A/B + crossfade, tweak colour/effects, choose a <b>Reactivity</b> mode. Set <b>BPM</b> (or <code>Tap</code>) and enable <b>BPM loops</b> for tempo-synced counterpoint motion.</li>
-            <li><b>Presets:</b> <code>Save current</code> names a look (recall with its button, keys <b>1–8</b> for the first eight, or a learned MPD26 pad).</li>
-            <li><b>MIDI (optional):</b> <code>Connect MIDI</code>, then <code>Learn</code> next to a parameter or preset and move/press a control. <code>Reset mappings</code> clears all.</li>
+            <li><b>Presets:</b> <code>Save current</code> names a look (recall with its button, keys <b>1–8</b> for the first eight, or a learned MIDI pad/key).</li>
+            <li><b>MIDI (optional):</b> <code>Connect MIDI</code>, then <code>Learn</code> next to a parameter or preset and move/press a control — works with any controller (pads/keys trigger presets, knobs/faders drive parameters). <code>Reset mappings</code> clears all.</li>
             <li><b>Quality:</b> the <b>Quality</b> slider under Output scales the internal render resolution (100% = full). On a big/4K projector or if frames drop, lower it (e.g. 60–75%) for GPU headroom — visuals get slightly softer but run smoother. It's a per-machine setting, not saved in presets. Also keep the laptop <b>plugged in</b> to avoid GPU power-throttling.</li>
           </ol>
         </details>

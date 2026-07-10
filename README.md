@@ -2,7 +2,7 @@
 
 A lightweight, browser-based **audio-reactive visual instrument** for live performance.
 Run it next to Ableton Live: it listens to your audio and projects generative visuals
-full-screen on a second display, driven live from the keyboard or an Akai MPD26.
+full-screen on a second display, driven live from the keyboard or any MIDI controller.
 
 Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control panel**
 (keep on the laptop, beside Ableton) and a clean **output window** (send to the projector).
@@ -28,10 +28,10 @@ The in-app **How to run** panel has the full checklist.
 - **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **luma key** (reveal one feed through another's brightness — or through the feedback buffer).
 - **BPM loops** — tempo-synced motion as counterpoint to the audio reactivity: set the **BPM** (or Tap), then loop Hue / Sat / Crossfade / Feedback / Key over ¼-beat–8-bar cycles, with ramp / sine / triangle / square shapes.
 - **My presets** — save and recall full looks (stored in the browser; number keys **1–8** fire the first eight; each is MIDI-mappable).
-- **MIDI (Akai MPD26)** — Connect, then **Learn** any parameter or preset onto a pad or knob.
-- **Output** — open the projector window and set **Quality** (render scale) for GPU headroom.
+- **MIDI** — Connect, then **Learn** any parameter or preset onto a control. Works with any controller: pads or keyboard keys (Note On) trigger presets; knobs, faders, or the mod wheel (CC) drive parameters. Multiple devices at once are fine.
+- **Output** — the top-bar button opens the projector window (**perform mode**: the panel slims down to share the screen with Ableton, and a low-power mini preview stays in the corner as a confidence monitor; close the output window to return to **design mode**, with the full-size preview). **Quality** (render scale) buys GPU headroom.
 
-**Generative sources:** Plasma, Flow field, Kaleidoscope, Tunnel, Metaballs, Voronoi, Julia, Interference — plus live Camera and Video file.
+**Generative sources:** Plasma, Flow field, Kaleidoscope, Tunnel, Metaballs, Voronoi, Julia, Interference — plus four **keying mattes** (Ink blobs, Strobe bars, Iris, Pulse rings: high-contrast white-on-black shapes made for luma-keying the camera or a video through them) — plus live Camera and Video file.
 
 ## Recommendations
 
@@ -39,11 +39,12 @@ The in-app **How to run** panel has the full checklist.
 - **For tight sync,** type or tap the BPM rather than trusting the drifting auto-estimate.
 - **Layer motion:** let transients drive zoom/brightness while a slow BPM loop drifts the colour — two rhythms read as more musical than one.
 - **On a 4K projector or if frames drop,** lower **Quality** to ~60–75% and keep the laptop plugged in.
-- **Sharing the MPD26 with Ableton:** map the app to one pad bank and Ableton (Cmd+M) to the other, so they don't collide.
+- **Sharing one controller with Ableton:** learn the app to controls Ableton doesn't use (e.g. one pad bank for clips, the other for visuals) — macOS lets both read the same device at once, and the app only reacts to what you've learned.
 
 ## Techniques to try
 
 - **Keyed feeds:** Source A generative, Source B camera/video, **Screen** blend, luma-key **from Feedback** → smeary, self-referential mattes.
+- **Camera through a matte:** Source A = a keying matte (Ink blobs / Iris / Strobe bars / Pulse rings), Source B = Camera, luma-key **from Source A** → the camera appears only inside the moving white shapes; **invert** flips it.
 - **Difference / Multiply** two generative sources for rich moiré-like overlaps.
 - **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.
 

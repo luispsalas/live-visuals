@@ -171,4 +171,71 @@ export const GENERATIVE = [
       }
     `,
   },
+
+  // --- Keying-friendly sources -------------------------------------------
+  // Near-binary luminance (white shapes on black) so they read as clean luma
+  // mattes: put one in a slot, enable the luma key from it, and the camera (or
+  // any feed) shows through the bright areas. They render grayscale on purpose —
+  // the global hue/sat controls tint them when used as visible layers instead.
+  {
+    id: 'ink',
+    name: 'Ink blobs',
+    body: /* glsl */ `
+      vec3 render(vec2 p) {
+        float t = uTime * 0.12;
+        float f = fbm(p * (2.2 + uTreble * 2.0) + vec2(t, -t * 0.7));
+        f += 0.25 * fbm(p * 5.0 - t);
+        float cover = 0.52 - uBass * 0.18 - uRms * 0.10;    // louder = more ink
+        float body = smoothstep(cover, cover + 0.05, f);    // near-binary blobs
+        float edge = smoothstep(cover - 0.02, cover, f) - smoothstep(cover + 0.05, cover + 0.07, f);
+        return vec3(clamp(body + edge * uOnset, 0.0, 1.0));
+      }
+    `,
+  },
+  {
+    id: 'bars',
+    name: 'Strobe bars',
+    body: /* glsl */ `
+      vec3 render(vec2 p) {
+        float t = uTime;
+        float ang = 0.35 * sin(t * 0.1) + uMid * 1.2;       // mid steers the tilt
+        float x = dot(p, vec2(cos(ang), sin(ang)));
+        float n = 4.0 + floor(uTreble * 10.0);              // treble = bar count
+        float ph = fract(x * n - t * (0.3 + uBass * 1.2));  // bass = sweep speed
+        float width = 0.25 + uRms * 0.45 + uOnset * 0.2;    // loudness widens bars
+        float bar = smoothstep(width + 0.02, width, abs(ph - 0.5) * 2.0);
+        return vec3(bar);
+      }
+    `,
+  },
+  {
+    id: 'iris',
+    name: 'Iris',
+    body: /* glsl */ `
+      vec3 render(vec2 p) {
+        float t = uTime * 0.4;
+        vec2 c = 0.35 * vec2(sin(t * 0.9), cos(t * 0.7));   // drifting spotlight
+        float r = 0.18 + uBass * 0.3 + uOnset * 0.08;       // bass opens the iris
+        float d = length(p - c);
+        float disc = smoothstep(r, r - 0.03, d);
+        float halo = smoothstep(r + 0.25, r, d) * 0.15 * (1.0 + uRms);
+        return vec3(clamp(disc + halo, 0.0, 1.0));
+      }
+    `,
+  },
+  {
+    id: 'rings',
+    name: 'Pulse rings',
+    body: /* glsl */ `
+      vec3 render(vec2 p) {
+        float r = length(p);
+        float speed = 0.25 + uBass * 0.9;                   // bass = expansion speed
+        float n = 6.0 + floor(uTreble * 8.0);               // treble = ring density
+        float ph = fract(r * n - uTime * speed);
+        float ring = smoothstep(0.18, 0.12, abs(ph - 0.5)); // hard-edged rings
+        float fade = smoothstep(1.2, 0.15, r);              // vignette to black
+        return vec3(clamp(ring * fade * (0.55 + uRms * 0.8 + uOnset * 0.5), 0.0, 1.0));
+      }
+    `,
+  },
 ];
