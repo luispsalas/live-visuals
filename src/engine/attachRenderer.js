@@ -19,7 +19,7 @@ export function attachRenderer(canvas) {
   channel.on((type, payload) => {
     if (type === 'features') latest = payload;
     else if (type === 'state') renderer.setState(payload);
-    else if (type === 'camera') renderer.enableCamera(payload.on);
+    else if (type === 'camera') renderer.enableCamera(payload.on, payload.deviceId);
     else if (type === 'video-file') renderer.loadVideo(payload);
     else if (type === 'quality') {
       lastQuality = payload.value;

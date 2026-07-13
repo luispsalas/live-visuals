@@ -83,10 +83,12 @@ export class TextureSource {
     this.uniforms.uTexRes.value.set(this.video.videoWidth || 16, this.video.videoHeight || 9);
   }
 
-  async useCamera() {
+  async useCamera(deviceId) {
     try {
       this.stop();
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      // A specific deviceId (external / virtual cam) or the default when unset.
+      const video = deviceId ? { deviceId: { exact: deviceId } } : true;
+      this.stream = await navigator.mediaDevices.getUserMedia({ video, audio: false });
       this.video.srcObject = this.stream;
       await this.video.play();
       if (this.video.videoWidth) this._ready();

@@ -19,6 +19,7 @@ const reactivity = new Reactivity();
 let features = null;
 let outputWin = null;
 let cameraOn = false;
+let cameraDeviceId = null; // chosen camera (empty = default); not saved in presets
 
 // App state mirrored to the output window (reactivity + loops are used locally).
 const state = {
@@ -79,6 +80,8 @@ const ui = {
   bpmDetected: el('bpm-detected'),
   loops: el('loops'),
   camera: el('camera'),
+  cameraSelect: el('camera-select'),
+  cameraRefresh: el('camera-refresh'),
   videoFile: el('video-file'),
   savePresetName: el('save-name'),
   savePresetBtn: el('save-preset'),
@@ -223,8 +226,32 @@ function updateControls() {
 
 function enableCamera(on) {
   cameraOn = on;
-  channel.send('camera', { on });
+  channel.send('camera', { on, deviceId: cameraDeviceId });
   ui.camera.textContent = on ? 'Camera: on' : 'Camera: off';
+}
+
+// List the available cameras (external, virtual, built-in) in the picker. Labels
+// and stable deviceIds are only exposed once camera permission is granted, so
+// pass { prompt: true } on an explicit user gesture to request it and fill them in.
+async function refreshCameras({ prompt = false } = {}) {
+  let cams = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'videoinput');
+  if (prompt && (!cams.length || !cams[0].deviceId || !cams[0].label)) {
+    try {
+      const tmp = await navigator.mediaDevices.getUserMedia({ video: true });
+      tmp.getTracks().forEach((t) => t.stop());
+      cams = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'videoinput');
+    } catch (e) { /* denied — keep the generic list */ }
+  }
+  ui.cameraSelect.innerHTML = '<option value="">Default camera</option>';
+  cams.forEach((d, i) => {
+    const opt = document.createElement('option');
+    opt.value = d.deviceId;
+    opt.textContent = d.label || `Camera ${i + 1}`;
+    ui.cameraSelect.appendChild(opt);
+  });
+  // Keep the current selection if it still exists.
+  ui.cameraSelect.value = cams.some((c) => c.deviceId === cameraDeviceId) ? cameraDeviceId : '';
+  cameraDeviceId = ui.cameraSelect.value || null;
 }
 
 // Apply a saved state bundle (used by user presets, MIDI, and keyboard).
@@ -456,7 +483,7 @@ channel.on((type) => {
   if (type === 'request-state') {
     sendState();
     channel.send('quality', { value: quality });
-    if (cameraOn) channel.send('camera', { on: true });
+    if (cameraOn) channel.send('camera', { on: true, deviceId: cameraDeviceId });
   }
 });
 
@@ -541,10 +568,22 @@ ui.quality.addEventListener('change', () => {
   channel.send('quality', { value: quality });
 });
 
-ui.camera.addEventListener('click', () => {
+ui.camera.addEventListener('click', async () => {
   enableCamera(!cameraOn);
-  if (cameraOn) { state.slotB = CAMERA_INDEX; ui.slotB.value = String(CAMERA_INDEX); sendState(); }
+  if (cameraOn) {
+    state.slotB = CAMERA_INDEX; ui.slotB.value = String(CAMERA_INDEX); sendState();
+    await refreshCameras({ prompt: true }); // permission is now granted → real labels/ids
+  }
 });
+
+// Switch the live camera to the chosen device (re-opens the stream if it's on).
+ui.cameraSelect.addEventListener('change', () => {
+  cameraDeviceId = ui.cameraSelect.value || null;
+  if (cameraOn) enableCamera(true);
+});
+ui.cameraRefresh.addEventListener('click', () => refreshCameras({ prompt: true }));
+// Virtual cameras (OBS, etc.) appear/disappear at runtime — keep the list fresh.
+navigator.mediaDevices.addEventListener?.('devicechange', () => refreshCameras());
 
 ui.videoFile.addEventListener('change', () => {
   const file = ui.videoFile.files[0];
@@ -569,3 +608,4 @@ ui.bpmInput.value = String(tempo);
 updateControls();
 renderUserPresets();
 refreshInputs();
+refreshCameras(); // populate whatever's visible without a permission prompt

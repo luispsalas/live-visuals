@@ -79,8 +79,8 @@ export class Renderer {
     this.feedback.setState(s);
   }
 
-  enableCamera(on) {
-    if (on) this.cameraSource.useCamera();
+  enableCamera(on, deviceId) {
+    if (on) this.cameraSource.useCamera(deviceId);
     else this.cameraSource.stop();
   }
 
