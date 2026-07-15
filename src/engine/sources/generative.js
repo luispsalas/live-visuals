@@ -238,4 +238,41 @@ export const GENERATIVE = [
       }
     `,
   },
+  {
+    id: 'blood',
+    name: 'Blood flow',
+    body: /* glsl */ `
+      vec3 render(vec2 p) {
+        float t = uTime;
+        // Flow axis: from the upper-right corner down to the lower-left.
+        vec2 dir = normalize(vec2(-1.0, -1.0));
+        vec2 perp = vec2(-dir.y, dir.x);
+        float along  = dot(p, dir);
+        float across = dot(p, perp);
+
+        float speed = 0.15 + uBass * 0.55;        // bass makes it stream faster
+        // Stretch along the flow (long streaks), compress across it.
+        vec2 q = vec2(across * 5.0, (along - speed * t) * 2.4);
+
+        // Viscous domain warp — two fbm octaves dragging the field around.
+        vec2 warp = vec2(fbm(q * 0.6 + t * 0.08), fbm(q * 0.6 + vec2(3.1, 1.7) - t * 0.08));
+        float d = fbm(q + warp * (1.3 + uMid * 1.2));
+        d = d * 1.15 - 0.1;
+
+        d += 0.12 * smoothstep(0.7, -0.7, along);  // richer "supply" at the upper-right
+        d += uOnset * 0.18;                         // onsets surge the flow
+        d *= 0.9 + uRms * 0.4;                       // loudness thickens it
+        d = clamp(d, 0.0, 1.0);
+
+        // Blood palette: near-black clot -> deep crimson -> bright arterial red.
+        vec3 dark   = vec3(0.04, 0.0, 0.0);
+        vec3 blood  = vec3(0.45, 0.012, 0.02);
+        vec3 bright = vec3(0.85, 0.06, 0.05);
+        vec3 col = mix(dark, blood, smoothstep(0.18, 0.55, d));
+        col = mix(col, bright, smoothstep(0.55, 0.85, d));
+        col += smoothstep(0.82, 0.97, d) * vec3(0.5, 0.22, 0.16); // wet sheen on crests
+        return col;
+      }
+    `,
+  },
 ];
