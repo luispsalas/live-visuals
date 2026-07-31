@@ -24,6 +24,27 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   library" the presets reference by id. Weigh size/permissions/UX.
 
 ## Sources & FX
+- **Review the webcam-effects catalog for new effects** — work through the reference
+  table (Google Drive `1PQOHESuo55kcgsgtugP-avf7ZKfCucocOQDG3OR2JKQ`: ~85 effects in 11
+  categories, each with its web technology, a performance rating, and the Max/Jitter
+  equivalent) and decide what to add. Already covered by the app: hue/saturation,
+  RGB split, glitch, feedback loop, luma key, kaleidoscope, tunnel, webcam mirror,
+  audio-reactive FX. Strongest gaps, roughly in value order:
+  - **Chroma key (green screen)** and **difference key** (remove a static background) —
+    the app only has luma keying today; both are rated High and are the obvious
+    companions to the existing keying mattes.
+  - **Motion-reactive FX / frame difference** — a whole new input axis alongside audio:
+    movement in the camera drives parameters. Frame difference is cheap (Canvas/WebGL);
+    MediaPipe segmentation and optical flow are heavier but far more capable.
+  - **Cheap, high-impact post effects** — Sobel edge detection, halftone, dithering,
+    film grain, bloom, scanlines. All rated High or Very High, and they overlap with
+    the Degradation FX item below (consider merging the two into one post-FX pass).
+  - **Camera distortions** — twist, ripple, pinch/bulge, fisheye, barrel. All WebGL,
+    all High, and they suit a live camera feed better than a generative source.
+  - **Slit scan** — time smeared across an image axis; distinctive and hard to fake.
+  Note the catalog assumes a single-video-filter pipeline, whereas this app is a
+  two-slot A/B compositor, so decide per effect whether it belongs as a **source**, a
+  **per-source filter**, or a **global post pass** before building anything.
 - **Degradation FX** — posterize / pixelate / mosaic / scanlines / chroma bleed as a
   post step (the compositing option not yet built).
 - ~~**Camera/Video slot stability**~~ — **done.** Camera/Video pinned to reserved slot
