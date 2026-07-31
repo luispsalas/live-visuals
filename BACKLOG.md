@@ -29,8 +29,6 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - ~~**Camera/Video slot stability**~~ — **done.** Camera/Video pinned to reserved slot
   values (98/99) in manifest.js so adding generative sources never shifts them; old
   presets migrate 8/9 → 98/99 on load.
-
-## Sources & FX (continued)
 - **Text input as a visual layer** — review adding live text as a source/overlay
   (titles, lyrics, messages). Decisions to weigh: render approach (canvas-2D texture
   → GPU vs an HTML overlay on the output window), where it sits in the pipeline (its
@@ -47,6 +45,16 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
   "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
   audio). Workflow documented in README → "Recording a demo".
+- **Bilingual FAQ (English + Spanish) for non-technical users** — review GitHub's own
+  documentation conventions first (what a repo can host and how it's presented:
+  README vs `/docs` folder vs the Wiki vs GitHub Pages; language-switching patterns
+  such as `README.es.md` + a link pair at the top; whether Discussions' Q&A category
+  fits better than a static file). Then write a FAQ aimed at someone who has never
+  used GitHub or a terminal: what the app is, what you need to run it, how to get it,
+  common problems (no sound reaching the app, camera not listed, projector setup),
+  and where to ask for help. Keep both languages in sync — decide whether they live in
+  one file or two. Pairs with `USER-GUIDE.md` (also a draft) and with the unresolved
+  "friendly launcher" question, which changes the install answers.
 
 ## Housekeeping
 - Choose a licence before any wider sharing.
