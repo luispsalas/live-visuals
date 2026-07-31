@@ -69,3 +69,8 @@ Tip: keep the output window at a decent size — OBS scales the capture to fit t
 Vite + Three.js. The control window analyses audio and streams state to the output
 window over a `BroadcastChannel`; the output window owns the WebGL renderer. Audio
 analysis runs on a Web Audio clock so reactivity survives fullscreen.
+
+## Licence
+
+[MIT](LICENSE) — free to use, modify, and share, including commercially; just keep
+the copyright notice. Three.js and Vite are MIT too.

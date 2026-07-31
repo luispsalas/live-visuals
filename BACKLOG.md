@@ -57,4 +57,6 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   "friendly launcher" question, which changes the install answers.
 
 ## Housekeeping
-- Choose a licence before any wider sharing.
+- ~~**Choose a licence**~~ — **done. MIT** (see `LICENSE`), matching the Three.js and
+  Vite dependency stack. Repo is still private; making it public is a separate step,
+  best taken once the FAQ, starter presets, and the launcher question are settled.

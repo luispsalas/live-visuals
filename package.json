@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
+  "license": "MIT",
+  "author": "Luis Salas",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
