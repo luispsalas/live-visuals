@@ -45,6 +45,17 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
   "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
   audio). Workflow documented in README → "Recording a demo".
+- **Sample GIF / clip as a README illustration** — review options for showing the tool
+  in motion at the top of the README, since text alone doesn't convey what it does.
+  Source material comes from the OBS workflow above. Points to weigh: an animated GIF
+  is the only format that autoplays inline on GitHub, but it is heavyweight (keep it
+  short and small — a few seconds, modest dimensions, budget well under ~10 MB or the
+  README feels broken on slow connections); alternatives are a poster image linking to
+  a video, or GitHub's own video upload (drag an MP4 into a README edit — it renders
+  as a player, but only on github.com, and it breaks anywhere else the Markdown is
+  read). Also decide where the file lives (an `assets/` folder in-repo vs an external
+  host) and whether to show several short looks or one representative one. Ties into
+  the starter-presets item — a GIF of a preset is a good showcase for both.
 - **Bilingual FAQ (English + Spanish) for non-technical users** — review GitHub's own
   documentation conventions first (what a repo can host and how it's presented:
   README vs `/docs` folder vs the Wiki vs GitHub Pages; language-switching patterns
