@@ -62,6 +62,8 @@
       .meter.mid > span { background: #ffd166; }
       .meter.treble > span { background: #4cc9f0; }
       .meter.rms > span { background: #80ffb0; }
+      .meter.motion > span { background: #c792ea; }
+      #motion-status { font-size: 11px; color: var(--muted); }
 
       /* The background-plate controls only apply to the difference key. */
       body:not(.diffkey) #key-bg-row { display: none; }
@@ -143,6 +145,14 @@
         <div class="row" id="key-bg-row"><label>Background</label><button id="key-capture">Capture BG</button><button id="key-clear">Clear</button><span id="key-bg-status">not captured</span></div>
         <div class="row"><label>Key thresh</label><input id="key-threshold" type="range" min="0" max="1" step="0.01" value="0.5" /></div>
         <div class="row"><label>Key soft</label><input id="key-softness" type="range" min="0" max="0.5" step="0.01" value="0.1" /></div>
+      </section>
+
+      <section class="module">
+        <h2>Motion (camera movement drives visuals)</h2>
+        <div class="row"><label>Enable</label><input id="motion-on" type="checkbox" /><span id="motion-status">camera off</span></div>
+        <div class="row"><label>Motion</label><div class="meter motion"><span id="m-motion"></span></div></div>
+        <div class="row"><label>Sensitivity</label><input id="motion-sens" type="range" min="0.2" max="4" step="0.1" value="1" /></div>
+        <div id="motion-routes"></div>
       </section>
 
       <section class="module">

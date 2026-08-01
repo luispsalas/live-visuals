@@ -16,6 +16,8 @@ export class ShaderSource {
       uTreble: { value: 0 },
       uRms: { value: 0 },
       uOnset: { value: 0 },
+      uMotion: { value: 0 },
+      uMotionEnv: { value: 0 },
       uHue: { value: 0 },
       uSat: { value: 1 },
       uRes: { value: new THREE.Vector2(1, 1) },
@@ -38,6 +40,8 @@ export class ShaderSource {
     u.uTreble.value = f.treble || 0;
     u.uRms.value = f.rms || 0;
     u.uOnset.value = f.onsetEnv || 0;
+    u.uMotion.value = f.motion || 0;
+    u.uMotionEnv.value = f.motionEnv || 0;
   }
 
   setState(s) {

@@ -40,6 +40,11 @@ export const PRELUDE = /* glsl */ `
   uniform float uRms;
   uniform float uOnset;   // decaying onset envelope 1->0
 
+  // Camera movement 0..1 (0 whenever motion analysis is off), plus its own
+  // transient envelope — the visual counterpart to uRms / uOnset.
+  uniform float uMotion;
+  uniform float uMotionEnv;
+
   // Global colour controls.
   uniform float uHue;     // additive hue rotation 0..1
   uniform float uSat;     // saturation multiplier 0..~1.5

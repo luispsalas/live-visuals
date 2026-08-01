@@ -33,9 +33,10 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   - ~~Chroma key / difference key~~ — **difference key done** (Capture BG plate, see
     Compositing in the README). **Chroma key declined** — difference keying covers the
     same use case without needing a green screen.
-  - **Motion-reactive FX / frame difference** — a whole new input axis alongside audio:
-    movement in the camera drives parameters. Frame difference is cheap (Canvas/WebGL);
-    MediaPipe segmentation and optical flow are heavier but far more capable.
+  - ~~Motion-reactive FX / frame difference~~ — **done.** Camera frame-differencing in
+    the control window (`src/control/motion.js`), routed onto parameters; `uMotion` /
+    `uMotionEnv` are also exposed to every shader for future sources to use directly.
+    Optical flow and MediaPipe segmentation remain as heavier, more capable options.
   - **Cheap, high-impact post effects** — Sobel edge detection, halftone, dithering,
     film grain, bloom, scanlines. All rated High or Very High, and they overlap with
     the Degradation FX item below (consider merging the two into one post-FX pass).

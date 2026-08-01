@@ -88,6 +88,12 @@ export class Renderer {
     this.videoSource.useBlob(blob);
   }
 
+  // The live camera <video>, for motion analysis in the control window (null when
+  // the camera is off). Read-only use — the texture keeps owning the element.
+  cameraVideo() {
+    return this.cameraSource.stream ? this.cameraSource.video : null;
+  }
+
   // Difference key: freeze the current key-source frame as the background plate.
   captureKeyRef() {
     this.compositor.captureKeyRef();

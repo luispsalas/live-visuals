@@ -5,6 +5,7 @@ import { SOURCE_LIST, CAMERA_INDEX, VIDEO_INDEX } from './engine/sources/manifes
 import { BLEND_MODES, KEY_SOURCES, KEY_MODES } from './engine/compositor.js';
 import { MidiInput } from './control/midi.js';
 import { DIVISIONS, SHAPES, shapeValue } from './control/loops.js';
+import { MotionAnalyser } from './control/motion.js';
 import { listUserPresets, saveUserPreset, removeUserPreset } from './control/userPresets.js';
 import { attachRenderer } from './engine/attachRenderer.js';
 import { createChannel } from './sync.js';
@@ -16,6 +17,7 @@ const channel = createChannel();
 const audio = new AudioEngine();
 const midi = new MidiInput();
 const reactivity = new Reactivity();
+const motion = new MotionAnalyser();
 let features = null;
 let outputWin = null;
 let cameraOn = false;
@@ -31,6 +33,13 @@ const state = {
   blend: 'mix',
   keyOn: false, keySource: 'b', keyMode: 'luma',
   keyThreshold: 0.5, keySoftness: 0.1, keyInvert: false,
+  // Camera movement as a control signal, routed onto parameters (stacks with loops).
+  motionOn: false, motionSens: 1,
+  motionRoutes: [
+    { target: 'mix',      enabled: false, depth: 0.5 },
+    { target: 'feedback', enabled: false, depth: 0.5 },
+    { target: 'glitch',   enabled: false, depth: 0.5 },
+  ],
   // One BPM-synced loop per modulatable target; each adds motion on top of the base.
   loops: [
     { target: 'hue',          enabled: false, beats: 16, shape: 'ramp',     depth: 1.0 },
@@ -48,6 +57,8 @@ let bpmLocked = false;
 let phaseStart = performance.now() / 1000; // loop phase origin (re-aligned by Tap/Sync)
 let tapTimes = [];
 let quality = 1; // render-scale, per-machine perf setting (kept out of presets)
+let motionLevel = 0; // latest smoothed motion reading, used by the routes
+const motionRouteEls = [];
 let noSoundActive = false;
 let noSoundRafId = null;
 const loopRowEls = []; // DOM refs per loop row, indexed alongside state.loops
@@ -84,6 +95,11 @@ const ui = {
   bpmSync: el('bpm-sync'),
   bpmDetected: el('bpm-detected'),
   loops: el('loops'),
+  motionOn: el('motion-on'),
+  motionSens: el('motion-sens'),
+  motionStatus: el('motion-status'),
+  motionRoutes: el('motion-routes'),
+  motionMeter: el('m-motion'),
   camera: el('camera'),
   cameraSelect: el('camera-select'),
   cameraRefresh: el('camera-refresh'),
@@ -218,6 +234,55 @@ function syncLoopRows() {
   });
 }
 
+// One row per motion route: enable, which parameter it drives, and how far.
+function buildMotionRoutes() {
+  ui.motionRoutes.innerHTML = '';
+  motionRouteEls.length = 0;
+  state.motionRoutes.forEach((route, i) => {
+    const row = document.createElement('div');
+    row.className = 'loop-row';
+
+    const en = document.createElement('input');
+    en.type = 'checkbox';
+    en.addEventListener('change', () => { state.motionRoutes[i].enabled = en.checked; });
+
+    const label = document.createElement('span');
+    label.className = 'loop-label';
+    label.textContent = 'drives';
+
+    const tgt = document.createElement('select');
+    Object.keys(PARAMS).forEach((name) => {
+      const o = document.createElement('option');
+      o.value = name;
+      o.textContent = PARAMS[name].label;
+      tgt.appendChild(o);
+    });
+    tgt.addEventListener('change', () => { state.motionRoutes[i].target = tgt.value; });
+
+    const dep = document.createElement('input');
+    dep.type = 'range';
+    dep.min = '0'; dep.max = '1'; dep.step = '0.01';
+    dep.className = 'loop-depth';
+    dep.title = 'Depth';
+    dep.addEventListener('input', () => { state.motionRoutes[i].depth = parseFloat(dep.value); });
+
+    row.append(en, label, tgt, dep);
+    ui.motionRoutes.appendChild(row);
+    motionRouteEls[i] = { en, tgt, dep };
+  });
+  syncMotionRoutes();
+}
+
+function syncMotionRoutes() {
+  state.motionRoutes.forEach((route, i) => {
+    const r = motionRouteEls[i];
+    if (!r) return;
+    r.en.checked = route.enabled;
+    r.tgt.value = route.target;
+    r.dep.value = String(route.depth);
+  });
+}
+
 function sendState() {
   channel.send('state', state);
 }
@@ -233,7 +298,10 @@ function updateControls() {
   ui.keyMode.value = state.keyMode;
   ui.keyInvert.checked = state.keyInvert;
   for (const [name, p] of Object.entries(PARAMS)) p.el.value = String(state[name]);
+  ui.motionOn.checked = state.motionOn;
+  ui.motionSens.value = String(state.motionSens);
   syncLoopRows();
+  syncMotionRoutes();
   syncKeyMode();
 }
 
@@ -279,7 +347,12 @@ async function refreshCameras({ prompt = false } = {}) {
 // Apply a saved state bundle (used by user presets, MIDI, and keyboard).
 function applyState(bundle) {
   const b = JSON.parse(JSON.stringify(bundle)); // deep-clone (loops array)
-  if (b.keyMode === undefined) b.keyMode = 'luma'; // presets saved before difference keying
+  if (b.keyMode === undefined) b.keyMode = 'luma';   // presets saved before difference keying
+  if (b.motionOn === undefined) {                    // presets saved before motion routing
+    b.motionOn = false;
+    b.motionSens = 1;
+    b.motionRoutes = state.motionRoutes.map((r) => ({ ...r, enabled: false }));
+  }
   Object.assign(state, b);
   updateControls();
   if (state.slotA === CAMERA_INDEX || state.slotB === CAMERA_INDEX) enableCamera(true);
@@ -288,23 +361,57 @@ function applyState(bundle) {
 
 // Per-frame loop modulation: send the effective value (base + loop offset) for each
 // loop target. Only runs when a loop is enabled; otherwise the sliders drive params.
-function sendLoopDynamics(now) {
-  if (!state.loops.some((l) => l.enabled)) return;
+function sendDynamics(now) {
+  const anyLoop = state.loops.some((l) => l.enabled);
+  const anyMotion = state.motionOn && state.motionRoutes.some((r) => r.enabled);
+  if (!anyLoop && !anyMotion) return;
+
+  // Seed every modulatable target with its slider value — including disabled ones,
+  // so a parameter snaps back the moment its loop or route is switched off.
   const eff = {};
-  for (const loop of state.loops) eff[loop.target] = state[loop.target]; // base values
+  for (const loop of state.loops) eff[loop.target] = state[loop.target];
+  for (const r of state.motionRoutes) eff[r.target] = state[r.target];
+
   for (const loop of state.loops) {
     if (!loop.enabled) continue;
     const p = PARAMS[loop.target];
     const cycleSec = loop.beats * (60 / tempo);
     let phase = cycleSec > 0 ? ((now - phaseStart) / cycleSec) % 1 : 0;
     if (phase < 0) phase += 1;
-    const mod = shapeValue(loop.shape, phase) * loop.depth * (p.max - p.min);
-    let v = state[loop.target] + mod;
-    if (loop.target === 'hue') v = ((v % 1) + 1) % 1;       // wrap colour
-    else v = Math.min(p.max, Math.max(p.min, v));            // clamp the rest
-    eff[loop.target] = v;
+    eff[loop.target] += shapeValue(loop.shape, phase) * loop.depth * (p.max - p.min);
+  }
+
+  // Motion adds on top, so movement, tempo and the slider can stack on one param.
+  if (anyMotion) {
+    for (const r of state.motionRoutes) {
+      if (!r.enabled) continue;
+      const p = PARAMS[r.target];
+      eff[r.target] += motionLevel * r.depth * (p.max - p.min);
+    }
+  }
+
+  for (const name of Object.keys(eff)) {
+    const p = PARAMS[name];
+    eff[name] = name === 'hue'
+      ? ((eff[name] % 1) + 1) % 1                              // wrap colour
+      : Math.min(p.max, Math.max(p.min, eff[name]));           // clamp the rest
   }
   channel.send('state', eff);
+}
+
+// Sample the camera and update the meter. Driven by whichever clock is running
+// (audio or the no-sound fallback), never requestAnimationFrame on its own — the
+// control window gets throttled once the output window goes fullscreen.
+function updateMotion(now) {
+  motion.sensitivity = state.motionSens;
+  motion.setVideo(state.motionOn ? preview.renderer.cameraVideo() : null);
+  const m = motion.update(now);
+  motionLevel = m.motion;
+  ui.motionMeter.style.width = `${Math.min(m.motion * 100, 100)}%`;
+  ui.motionStatus.textContent = !state.motionOn ? 'off'
+    : motion.video ? 'watching camera'
+    : 'camera off — enable Camera above';
+  return m;
 }
 
 // Set one parameter from a normalized 0..1 value (used by MIDI CCs).
@@ -457,8 +564,9 @@ const STATIC_FEATURES = { bass: 0.4, mid: 0.4, treble: 0.4, rms: 0.35, onset: fa
 function noSoundFrame() {
   if (!noSoundActive) return;
   const now = performance.now() / 1000;
-  channel.send('features', STATIC_FEATURES);
-  sendLoopDynamics(now);
+  const m = updateMotion(now);
+  channel.send('features', { ...STATIC_FEATURES, ...m });
+  sendDynamics(now);
   noSoundRafId = requestAnimationFrame(noSoundFrame);
 }
 
@@ -497,9 +605,10 @@ function analyzeFrame() {
     ui.bpmInput.value = String(Math.round(raw.bpm));
   }
 
-  // Visuals get the mode-shaped signal, plus any BPM-loop modulation.
-  channel.send('features', reactivity.process(raw, state.reactivity));
-  sendLoopDynamics(now);
+  // Visuals get the mode-shaped signal plus motion, then any loop/route modulation.
+  const m = updateMotion(now);
+  channel.send('features', { ...reactivity.process(raw, state.reactivity), ...m });
+  sendDynamics(now);
 }
 
 // Re-send state + camera status when the output window asks (e.g. it opened late).
@@ -552,6 +661,13 @@ ui.feedback.addEventListener('input', () => { state.feedback = parseFloat(ui.fee
 ui.rgbShift.addEventListener('input', () => { state.rgbShift = parseFloat(ui.rgbShift.value); sendState(); });
 ui.glitch.addEventListener('input', () => { state.glitch = parseFloat(ui.glitch.value); sendState(); });
 ui.reactivityMode.addEventListener('change', () => { state.reactivity = ui.reactivityMode.value; });
+
+// Motion: enabling it turns the camera on too, since it has nothing to watch otherwise.
+ui.motionOn.addEventListener('change', () => {
+  state.motionOn = ui.motionOn.checked;
+  if (state.motionOn && !cameraOn) enableCamera(true);
+});
+ui.motionSens.addEventListener('input', () => { state.motionSens = parseFloat(ui.motionSens.value); });
 
 // Compositing / keying.
 ui.blend.addEventListener('change', () => { state.blend = ui.blend.value; sendState(); });
@@ -637,6 +753,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 buildLoopRows();
+buildMotionRoutes();
 ui.bpmInput.value = String(tempo);
 updateControls();
 renderUserPresets();
