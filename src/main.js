@@ -28,6 +28,8 @@ const state = {
   slotA: 0, slotB: 1, mix: 0,
   hue: 0, sat: 1,
   feedback: 0, rgbShift: 0, glitch: 0,
+  // Degradation FX, applied in the display pass.
+  pixelate: 0, posterize: 0, scanlines: 0, grain: 0,
   reactivity: 'punchy',
   // Compositing: how A and B overlap, and optional luma key.
   blend: 'mix',
@@ -79,6 +81,10 @@ const ui = {
   feedback: el('feedback'),
   rgbShift: el('rgb-shift'),
   glitch: el('glitch'),
+  pixelate: el('pixelate'),
+  posterize: el('posterize'),
+  scanlines: el('scanlines'),
+  grain: el('grain'),
   blend: el('blend'),
   keyOn: el('key-on'),
   keySource: el('key-source'),
@@ -134,6 +140,10 @@ const PARAMS = {
   glitch:       { min: 0, max: 1,    el: ui.glitch,       label: 'Glitch' },
   keyThreshold: { min: 0, max: 1,    el: ui.keyThreshold, label: 'Key thresh' },
   keySoftness:  { min: 0, max: 0.5,  el: ui.keySoftness,  label: 'Key soft' },
+  pixelate:     { min: 0, max: 1,    el: ui.pixelate,     label: 'Pixelate' },
+  posterize:    { min: 0, max: 1,    el: ui.posterize,    label: 'Posterize' },
+  scanlines:    { min: 0, max: 1,    el: ui.scanlines,    label: 'Scanlines' },
+  grain:        { min: 0, max: 1,    el: ui.grain,        label: 'Grain' },
 };
 
 // Populate slot selectors from the shared source manifest. Option values are the
@@ -348,6 +358,9 @@ async function refreshCameras({ prompt = false } = {}) {
 function applyState(bundle) {
   const b = JSON.parse(JSON.stringify(bundle)); // deep-clone (loops array)
   if (b.keyMode === undefined) b.keyMode = 'luma';   // presets saved before difference keying
+  for (const k of ['pixelate', 'posterize', 'scanlines', 'grain']) {
+    if (b[k] === undefined) b[k] = 0;                // presets saved before degradation FX
+  }
   if (b.motionOn === undefined) {                    // presets saved before motion routing
     b.motionOn = false;
     b.motionSens = 1;
@@ -660,6 +673,10 @@ ui.sat.addEventListener('input', () => { state.sat = parseFloat(ui.sat.value); s
 ui.feedback.addEventListener('input', () => { state.feedback = parseFloat(ui.feedback.value); sendState(); });
 ui.rgbShift.addEventListener('input', () => { state.rgbShift = parseFloat(ui.rgbShift.value); sendState(); });
 ui.glitch.addEventListener('input', () => { state.glitch = parseFloat(ui.glitch.value); sendState(); });
+ui.pixelate.addEventListener('input', () => { state.pixelate = parseFloat(ui.pixelate.value); sendState(); });
+ui.posterize.addEventListener('input', () => { state.posterize = parseFloat(ui.posterize.value); sendState(); });
+ui.scanlines.addEventListener('input', () => { state.scanlines = parseFloat(ui.scanlines.value); sendState(); });
+ui.grain.addEventListener('input', () => { state.grain = parseFloat(ui.grain.value); sendState(); });
 ui.reactivityMode.addEventListener('change', () => { state.reactivity = ui.reactivityMode.value; });
 
 // Motion: enabling it turns the camera on too, since it has nothing to watch otherwise.

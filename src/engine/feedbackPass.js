@@ -32,6 +32,8 @@ const DISP_FRAG = /* glsl */ `
   varying vec2 vUv;
   uniform sampler2D uTex;
   uniform float uRgbShift, uGlitch, uTime, uOnset;
+  uniform float uPixelate, uPosterize, uScanlines, uGrain;
+  uniform vec2 uRes;
   float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
     p += dot(p, p + 45.32);
@@ -44,12 +46,39 @@ const DISP_FRAG = /* glsl */ `
     float n = hash(vec2(line, floor(uTime * 15.0)));
     uv.x += (n - 0.5) * uGlitch * step(0.7, n);
 
+    // Pixelate/mosaic: snap to a grid before sampling. Block size grows on a curve
+    // so the low end of the slider stays subtle instead of jumping straight to chunky.
+    if (uPixelate > 0.001) {
+      vec2 grid = max(uRes / (1.0 + uPixelate * uPixelate * 70.0), vec2(2.0));
+      uv = (floor(uv * grid) + 0.5) / grid;
+    }
+
     // Chromatic aberration, nudged on onsets.
     float shift = uRgbShift + uOnset * 0.008;
     float r = texture2D(uTex, uv + vec2(shift, 0.0)).r;
     float g = texture2D(uTex, uv).g;
     float b = texture2D(uTex, uv - vec2(shift, 0.0)).b;
-    gl_FragColor = vec4(r, g, b, 1.0);
+    vec3 col = vec3(r, g, b);
+
+    // Posterize: quantise each channel. 32 steps is near-invisible, 2 is brutal.
+    if (uPosterize > 0.001) {
+      float levels = mix(32.0, 2.0, uPosterize);
+      col = floor(col * levels + 0.5) / levels;
+    }
+
+    // Scanlines: a fixed line count, so they read the same at any resolution.
+    if (uScanlines > 0.001) {
+      float s = 0.5 + 0.5 * sin(vUv.y * 240.0 * 3.14159265);
+      col *= 1.0 - uScanlines * 0.65 * s;
+    }
+
+    // Film grain: monochrome noise, re-seeded every frame.
+    if (uGrain > 0.001) {
+      float g2 = hash(vUv * 997.0 + fract(uTime) * 543.0) - 0.5;
+      col += g2 * uGrain * 0.4;
+    }
+
+    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
   }
 `;
 
@@ -83,6 +112,11 @@ export class FeedbackPass {
       uGlitch: { value: 0 },
       uTime: { value: 0 },
       uOnset: { value: 0 },
+      uPixelate: { value: 0 },
+      uPosterize: { value: 0 },
+      uScanlines: { value: 0 },
+      uGrain: { value: 0 },
+      uRes: { value: new THREE.Vector2(1, 1) },
     };
     this.dispScene = quad(DISP_FRAG, this.dispUniforms);
 
@@ -91,6 +125,11 @@ export class FeedbackPass {
     this.feedback = 0;
     this.rgbShift = 0;
     this.glitch = 0;
+    // Degradation FX, applied in the display pass (see DISP_FRAG).
+    this.pixelate = 0;
+    this.posterize = 0;
+    this.scanlines = 0;
+    this.grain = 0;
   }
 
   // The last accumulated frame, used by the compositor for feedback-as-key.
@@ -102,6 +141,8 @@ export class FeedbackPass {
     const W = Math.floor(w * pr), H = Math.floor(h * pr);
     this.histA.setSize(W, H);
     this.histB.setSize(W, H);
+    // Pixelate and scanlines work in pixels, so they need the real buffer size.
+    this.dispUniforms.uRes.value.set(W, H);
   }
 
   setFeatures(f) {
@@ -113,6 +154,10 @@ export class FeedbackPass {
     if (s.feedback !== undefined) this.feedback = s.feedback;
     if (s.rgbShift !== undefined) this.rgbShift = s.rgbShift;
     if (s.glitch !== undefined) this.glitch = s.glitch;
+    if (s.pixelate !== undefined) this.pixelate = s.pixelate;
+    if (s.posterize !== undefined) this.posterize = s.posterize;
+    if (s.scanlines !== undefined) this.scanlines = s.scanlines;
+    if (s.grain !== undefined) this.grain = s.grain;
   }
 
   render(renderer, sceneTexture) {
@@ -133,6 +178,10 @@ export class FeedbackPass {
     this.dispUniforms.uGlitch.value = this.glitch;
     this.dispUniforms.uTime.value = t;
     this.dispUniforms.uOnset.value = this.onset;
+    this.dispUniforms.uPixelate.value = this.pixelate;
+    this.dispUniforms.uPosterize.value = this.posterize;
+    this.dispUniforms.uScanlines.value = this.scanlines;
+    this.dispUniforms.uGrain.value = this.grain;
     renderer.setRenderTarget(null);
     renderer.render(this.dispScene, this.camera);
 

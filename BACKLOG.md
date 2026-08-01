@@ -46,8 +46,10 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   Note the catalog assumes a single-video-filter pipeline, whereas this app is a
   two-slot A/B compositor, so decide per effect whether it belongs as a **source**, a
   **per-source filter**, or a **global post pass** before building anything.
-- **Degradation FX** — posterize / pixelate / mosaic / scanlines / chroma bleed as a
-  post step (the compositing option not yet built).
+- ~~**Degradation FX**~~ — **done.** Pixelate/mosaic, posterize, scanlines and grain in
+  the display pass (`feedbackPass.js`), each a normal parameter so it is MIDI-mappable
+  and motion-routable. Chroma bleed was already covered by the existing RGB shift.
+  Still open from the same family: halftone, dithering, Sobel edges, bloom.
 - ~~**Camera/Video slot stability**~~ — **done.** Camera/Video pinned to reserved slot
   values (98/99) in manifest.js so adding generative sources never shifts them; old
   presets migrate 8/9 → 98/99 on load.
