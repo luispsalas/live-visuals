@@ -2,7 +2,7 @@ import { AudioEngine } from './audio/audioEngine.js';
 import { Features } from './audio/features.js';
 import { Reactivity, REACTIVITY_MODES } from './audio/reactivity.js';
 import { SOURCE_LIST, CAMERA_INDEX, VIDEO_INDEX } from './engine/sources/manifest.js';
-import { BLEND_MODES, KEY_SOURCES } from './engine/compositor.js';
+import { BLEND_MODES, KEY_SOURCES, KEY_MODES } from './engine/compositor.js';
 import { MidiInput } from './control/midi.js';
 import { DIVISIONS, SHAPES, shapeValue } from './control/loops.js';
 import { listUserPresets, saveUserPreset, removeUserPreset } from './control/userPresets.js';
@@ -29,7 +29,8 @@ const state = {
   reactivity: 'punchy',
   // Compositing: how A and B overlap, and optional luma key.
   blend: 'mix',
-  keyOn: false, keySource: 'b', keyThreshold: 0.5, keySoftness: 0.1, keyInvert: false,
+  keyOn: false, keySource: 'b', keyMode: 'luma',
+  keyThreshold: 0.5, keySoftness: 0.1, keyInvert: false,
   // One BPM-synced loop per modulatable target; each adds motion on top of the base.
   loops: [
     { target: 'hue',          enabled: false, beats: 16, shape: 'ramp',     depth: 1.0 },
@@ -70,6 +71,10 @@ const ui = {
   blend: el('blend'),
   keyOn: el('key-on'),
   keySource: el('key-source'),
+  keyMode: el('key-mode'),
+  keyCapture: el('key-capture'),
+  keyClear: el('key-clear'),
+  keyBgStatus: el('key-bg-status'),
   keyThreshold: el('key-threshold'),
   keySoftness: el('key-softness'),
   keyInvert: el('key-invert'),
@@ -147,6 +152,12 @@ KEY_SOURCES.forEach((k) => {
   opt.textContent = k.name;
   ui.keySource.appendChild(opt);
 });
+KEY_MODES.forEach((m) => {
+  const opt = document.createElement('option');
+  opt.value = m.id;
+  opt.textContent = m.name;
+  ui.keyMode.appendChild(opt);
+});
 
 // Build one row per BPM loop (Hue / Sat / Crossfade / Feedback).
 function buildLoopRows() {
@@ -219,9 +230,20 @@ function updateControls() {
   ui.blend.value = state.blend;
   ui.keyOn.checked = state.keyOn;
   ui.keySource.value = state.keySource;
+  ui.keyMode.value = state.keyMode;
   ui.keyInvert.checked = state.keyInvert;
   for (const [name, p] of Object.entries(PARAMS)) p.el.value = String(state[name]);
   syncLoopRows();
+  syncKeyMode();
+}
+
+// Only show the background-plate controls when the difference key is selected.
+function syncKeyMode() {
+  document.body.classList.toggle('diffkey', state.keyMode === 'difference');
+}
+
+function setKeyRefStatus(captured) {
+  ui.keyBgStatus.textContent = captured ? 'captured' : 'not captured';
 }
 
 function enableCamera(on) {
@@ -256,7 +278,9 @@ async function refreshCameras({ prompt = false } = {}) {
 
 // Apply a saved state bundle (used by user presets, MIDI, and keyboard).
 function applyState(bundle) {
-  Object.assign(state, JSON.parse(JSON.stringify(bundle))); // deep-clone (loops array)
+  const b = JSON.parse(JSON.stringify(bundle)); // deep-clone (loops array)
+  if (b.keyMode === undefined) b.keyMode = 'luma'; // presets saved before difference keying
+  Object.assign(state, b);
   updateControls();
   if (state.slotA === CAMERA_INDEX || state.slotB === CAMERA_INDEX) enableCamera(true);
   sendState();
@@ -532,7 +556,16 @@ ui.reactivityMode.addEventListener('change', () => { state.reactivity = ui.react
 // Compositing / keying.
 ui.blend.addEventListener('change', () => { state.blend = ui.blend.value; sendState(); });
 ui.keyOn.addEventListener('change', () => { state.keyOn = ui.keyOn.checked; sendState(); });
-ui.keySource.addEventListener('change', () => { state.keySource = ui.keySource.value; sendState(); });
+ui.keySource.addEventListener('change', () => {
+  state.keySource = ui.keySource.value;
+  // The plate belongs to whichever feed it was grabbed from, so switching feeds invalidates it.
+  channel.send('key-ref', { capture: false });
+  setKeyRefStatus(false);
+  sendState();
+});
+ui.keyMode.addEventListener('change', () => { state.keyMode = ui.keyMode.value; syncKeyMode(); sendState(); });
+ui.keyCapture.addEventListener('click', () => { channel.send('key-ref', { capture: true }); setKeyRefStatus(true); });
+ui.keyClear.addEventListener('click', () => { channel.send('key-ref', { capture: false }); setKeyRefStatus(false); });
 ui.keyInvert.addEventListener('change', () => { state.keyInvert = ui.keyInvert.checked; sendState(); });
 ui.keyThreshold.addEventListener('input', () => { state.keyThreshold = parseFloat(ui.keyThreshold.value); sendState(); });
 ui.keySoftness.addEventListener('input', () => { state.keySoftness = parseFloat(ui.keySoftness.value); sendState(); });

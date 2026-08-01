@@ -88,6 +88,15 @@ export class Renderer {
     this.videoSource.useBlob(blob);
   }
 
+  // Difference key: freeze the current key-source frame as the background plate.
+  captureKeyRef() {
+    this.compositor.captureKeyRef();
+  }
+
+  clearKeyRef() {
+    this.compositor.clearKeyRef();
+  }
+
   render() {
     // Give the compositor last frame's feedback buffer (for feedback-as-key).
     this.compositor.setPrevFrame(this.feedback.prevTexture());

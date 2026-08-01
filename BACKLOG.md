@@ -30,9 +30,9 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   equivalent) and decide what to add. Already covered by the app: hue/saturation,
   RGB split, glitch, feedback loop, luma key, kaleidoscope, tunnel, webcam mirror,
   audio-reactive FX. Strongest gaps, roughly in value order:
-  - **Chroma key (green screen)** and **difference key** (remove a static background) —
-    the app only has luma keying today; both are rated High and are the obvious
-    companions to the existing keying mattes.
+  - ~~Chroma key / difference key~~ — **difference key done** (Capture BG plate, see
+    Compositing in the README). **Chroma key declined** — difference keying covers the
+    same use case without needing a green screen.
   - **Motion-reactive FX / frame difference** — a whole new input axis alongside audio:
     movement in the camera drives parameters. Frame difference is cheap (Canvas/WebGL);
     MediaPipe segmentation and optical flow are heavier but far more capable.

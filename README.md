@@ -25,7 +25,7 @@ The in-app **How to run** panel has the full checklist.
 
 - **Audio** — choose the input (BlackHole), Start, watch the bass/mid/treble/RMS meters and detected tempo.
 - **Mix & effects** — two visual **sources** (A/B) with a **crossfade**; **hue/sat** colour; **feedback** trails, **RGB shift**, **glitch**; a **Reactivity** mode (Punchy → Smooth → Mellow → Ambient → None) setting how strongly transients drive motion; plus **camera** and **video-file** inputs (the **Camera** dropdown picks which device — built-in, external, or a virtual cam like OBS; ⟳ rescans).
-- **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **luma key** (reveal one feed through another's brightness — or through the feedback buffer).
+- **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **key** that reveals one feed through another. Two key modes: **Luma** (matte from brightness — or from the feedback buffer) and **Difference** (press **Capture BG** on an empty shot, and afterwards only what *changed* — you walking in — lets the other feed through; no green screen needed).
 - **BPM loops** — tempo-synced motion as counterpoint to the audio reactivity: set the **BPM** (or Tap), then loop Hue / Sat / Crossfade / Feedback / Key over ¼-beat–8-bar cycles, with ramp / sine / triangle / square shapes.
 - **My presets** — save and recall full looks (stored in the browser; number keys **1–8** fire the first eight; each is MIDI-mappable).
 - **MIDI** — Connect, then **Learn** any parameter or preset onto a control. Works with any controller: pads or keyboard keys (Note On) trigger presets; knobs, faders, or the mod wheel (CC) drive parameters. Multiple devices at once are fine.
@@ -44,6 +44,7 @@ The in-app **How to run** panel has the full checklist.
 ## Techniques to try
 
 - **Keyed feeds:** Source A generative, Source B camera/video, **Screen** blend, luma-key **from Feedback** → smeary, self-referential mattes.
+- **Cut yourself out of the room:** Source A generative, Source B Camera, key **from Source B**, mode **Difference** — step out of frame, hit **Capture BG**, then step back in: you appear over the generative background with the room removed. **Invert** puts the visuals on you instead.
 - **Camera through a matte:** Source A = a keying matte (Ink blobs / Iris / Strobe bars / Pulse rings), Source B = Camera, luma-key **from Source A** → the camera appears only inside the moving white shapes; **invert** flips it.
 - **Difference / Multiply** two generative sources for rich moiré-like overlaps.
 - **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.

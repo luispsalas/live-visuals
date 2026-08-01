@@ -63,6 +63,9 @@
       .meter.treble > span { background: #4cc9f0; }
       .meter.rms > span { background: #80ffb0; }
 
+      /* The background-plate controls only apply to the difference key. */
+      body:not(.diffkey) #key-bg-row { display: none; }
+      #key-bg-status { font-size: 11px; color: var(--muted); }
       #status { color: var(--accent); font-size: 12px; }
       #bpm-detected, #midi-status { font-size: 11px; color: var(--muted); }
       #bpm-input { flex: 0 0 72px; }
@@ -135,7 +138,9 @@
       <section class="module">
         <h2>Compositing (overlap &amp; keying)</h2>
         <div class="row"><label>Blend</label><select id="blend"></select></div>
-        <div class="row"><label>Luma key</label><input id="key-on" type="checkbox" /><label style="width:auto">from</label><select id="key-source"></select><label style="width:auto">invert</label><input id="key-invert" type="checkbox" /></div>
+        <div class="row"><label>Key on</label><input id="key-on" type="checkbox" /><label style="width:auto">from</label><select id="key-source"></select><label style="width:auto">invert</label><input id="key-invert" type="checkbox" /></div>
+        <div class="row"><label>Key mode</label><select id="key-mode"></select></div>
+        <div class="row" id="key-bg-row"><label>Background</label><button id="key-capture">Capture BG</button><button id="key-clear">Clear</button><span id="key-bg-status">not captured</span></div>
         <div class="row"><label>Key thresh</label><input id="key-threshold" type="range" min="0" max="1" step="0.01" value="0.5" /></div>
         <div class="row"><label>Key soft</label><input id="key-softness" type="range" min="0" max="0.5" step="0.01" value="0.1" /></div>
       </section>

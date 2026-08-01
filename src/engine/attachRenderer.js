@@ -21,6 +21,10 @@ export function attachRenderer(canvas) {
     else if (type === 'state') renderer.setState(payload);
     else if (type === 'camera') renderer.enableCamera(payload.on, payload.deviceId);
     else if (type === 'video-file') renderer.loadVideo(payload);
+    else if (type === 'key-ref') {
+      if (payload.capture) renderer.captureKeyRef();
+      else renderer.clearKeyRef();
+    }
     else if (type === 'quality') {
       lastQuality = payload.value;
       renderer.setQuality(lowQuality ?? lastQuality);
