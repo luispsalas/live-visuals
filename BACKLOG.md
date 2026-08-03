@@ -53,6 +53,13 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - ~~**Camera/Video slot stability**~~ — **done.** Camera/Video pinned to reserved slot
   values (98/99) in manifest.js so adding generative sources never shifts them; old
   presets migrate 8/9 → 98/99 on load.
+- **Motion section tweaks** — *low priority.* The feature works, but the section wants
+  refinement in use. Nothing specific diagnosed yet, so first step is to note what
+  actually feels off while performing. Likely candidates: the sensitivity range and its
+  default (calibrated against synthetic feeds, not a real room), whether the smoothed
+  value or the transient envelope is the better thing to route, only three route slots,
+  no way to invert a route (movement *reducing* a parameter), and the meter giving no
+  sense of where the motion is happening. Revisit after a real session with a camera.
 - **Text input as a visual layer** — review adding live text as a source/overlay
   (titles, lyrics, messages). Decisions to weigh: render approach (canvas-2D texture
   → GPU vs an HTML overlay on the output window), where it sits in the pipeline (its
@@ -80,16 +87,32 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   read). Also decide where the file lives (an `assets/` folder in-repo vs an external
   host) and whether to show several short looks or one representative one. Ties into
   the starter-presets item — a GIF of a preset is a good showcase for both.
-- **Bilingual FAQ (English + Spanish) for non-technical users** — review GitHub's own
-  documentation conventions first (what a repo can host and how it's presented:
-  README vs `/docs` folder vs the Wiki vs GitHub Pages; language-switching patterns
-  such as `README.es.md` + a link pair at the top; whether Discussions' Q&A category
-  fits better than a static file). Then write a FAQ aimed at someone who has never
-  used GitHub or a terminal: what the app is, what you need to run it, how to get it,
-  common problems (no sound reaching the app, camera not listed, projector setup),
-  and where to ask for help. Keep both languages in sync — decide whether they live in
-  one file or two. Pairs with `USER-GUIDE.md` (also a draft) and with the unresolved
-  "friendly launcher" question, which changes the install answers.
+### Documentation rework (do these in order)
+
+1. **USER-GUIDE — one clear track per operating system.** Right now Mac and Windows
+   instructions are interleaved inside shared sections, so a reader has to constantly
+   work out which lines apply to them. It reads as complex at exactly the moment they
+   are trying to *start*. Restructure so a user picks their system once and then
+   follows an uninterrupted sequence — accept the duplication between the two tracks;
+   for end-user docs, clarity beats not repeating yourself. Also **delete the subtitle
+   line** "Plain-language guide for non-technical users. No technical background
+   assumed." — it states the obvious and slightly patronises.
+
+2. **README — same treatment, simpler language.** Write for someone who just wants to
+   follow a few steps for *their* system and start. Specifically: **delete** the line
+   "Early and evolving; built to grow progressively." and **delete** the "No DAW at
+   all?" sentence in the intro. Then review the whole flow — heading order, sentence
+   length, how early the reader reaches something that works — with the same
+   per-platform principle as the guide.
+
+3. **Spanish version, once 1 and 2 have settled.** A full Spanish document with all the
+   user-facing information (not a cut-down FAQ), linked prominently from the README.
+   Deliberately sequenced last so the English wording is stable first and the two
+   don't drift immediately. Decisions to make: file layout (`README.es.md` +
+   `USER-GUIDE.es.md` alongside the English, with a language link pair at the top of
+   each, is the common GitHub convention) versus a `/docs` folder or the Wiki; and how
+   to keep the versions in sync as the app changes. Worth a quick look at how other
+   projects handle bilingual docs before committing to a structure.
 
 ## Sharing / distribution
 - ~~**Friendly launcher for non-technical users**~~ — **resolved: host it.** The app is
@@ -100,15 +123,36 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   **Remaining decision (yours):** Pages on a *private* repo needs a paid GitHub plan;
   on the free plan the repo must be public. Alternatives: Netlify or Vercel free tiers
   deploy from a private repo. Nothing has been published yet.
-- **Verify the Windows audio paths first-hand** — two routes now exist and neither has
-  been run on real Windows hardware: **System audio** (`getDisplayMedia` + "Also share
-  system audio", no install — the code path is unit-tested with a synthetic stream but
-  the Chrome picker behaviour is not) and **VB-CABLE**. Flagged as unverified in the
-  README and guide until someone runs them.
+- **Verify the Windows audio paths first-hand** — *delegated: a friend will test, since
+  there is no Windows machine here.* Two routes exist and neither has been run on real
+  Windows hardware: **System audio** (`getDisplayMedia` + "Also share system audio", no
+  install — the code path is unit-tested with a synthetic stream but the Chrome picker
+  behaviour is not) and **VB-CABLE**. Both stay flagged as unverified in the README and
+  guide until confirmed. Worth asking the tester specifically: does the "Also share
+  system audio" tickbox appear, does a DAW's output actually come through, and is the
+  device named "CABLE Output" as documented.
+- **Add repository topics/tags on GitHub** — so the project is findable and its scope is
+  obvious at a glance. Candidates: `webgl`, `threejs`, `audio-reactive`, `visuals`,
+  `vj`, `live-performance`, `generative-art`, `web-audio`, `web-midi`, `shaders`,
+  `creative-coding`, `music-visualization`. Set via the repo's About panel (gear icon)
+  or `gh repo edit --add-topic`. Best done at the same time as any decision about
+  making the repo public.
 - **Blend-mode thumbnails for the guide** — a before/after image per mode would beat
   the prose table. Pairs with the README GIF item.
 
 ## Housekeeping
+- **Purge the local git backup refs (review first)** — the email rewrite left the old
+  history in `refs/original/refs/heads/main` and the tag `backup-before-email-rewrite`.
+  These are **local only and were never pushed**, so nothing is exposed — they exist
+  purely so the rewrite can be undone. Once the rewritten history is confirmed good
+  (GitHub shows the noreply address, nothing looks lost), delete them and garbage
+  collect so the old commits stop occupying the object store:
+  ```
+  git update-ref -d refs/original/refs/heads/main
+  git tag -d backup-before-email-rewrite
+  git reflog expire --expire=now --all && git gc --prune=now
+  ```
+  Irreversible once done — that is the point, so only run it deliberately.
 - ~~**Choose a licence**~~ — **done. MIT** (see `LICENSE`), matching the Three.js and
   Vite dependency stack. Repo is still private; making it public is a separate step,
   best taken once the FAQ, starter presets, and the launcher question are settled.
