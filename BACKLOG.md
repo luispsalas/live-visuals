@@ -131,12 +131,12 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   guide until confirmed. Worth asking the tester specifically: does the "Also share
   system audio" tickbox appear, does a DAW's output actually come through, and is the
   device named "CABLE Output" as documented.
-- **Add repository topics/tags on GitHub** — so the project is findable and its scope is
-  obvious at a glance. Candidates: `webgl`, `threejs`, `audio-reactive`, `visuals`,
-  `vj`, `live-performance`, `generative-art`, `web-audio`, `web-midi`, `shaders`,
-  `creative-coding`, `music-visualization`. Set via the repo's About panel (gear icon)
-  or `gh repo edit --add-topic`. Best done at the same time as any decision about
-  making the repo public.
+- ~~**Add repository topics/tags on GitHub**~~ — **done.** 12 topics applied: `webgl`,
+  `threejs`, `audio-reactive`, `visuals`, `vj`, `live-performance`, `generative-art`,
+  `web-audio`, `web-midi`, `shaders`, `creative-coding`, `music-visualization`. The
+  repo description was updated at the same time to match the current naming ("visual
+  engine … alongside any DAW", was "visual instrument … alongside DAW"). Topics only
+  become publicly searchable once the repo is public.
 - **Blend-mode thumbnails for the guide** — a before/after image per mode would beat
   the prose table. Pairs with the README GIF item.
 
