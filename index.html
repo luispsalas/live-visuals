@@ -18,9 +18,15 @@
       body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
       h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
 
-      /* Top bar: title, mode note, and the perform-mode switch. */
+      /* Top bar: title, mode note, and the perform-mode switch. The title always
+         gets its full width (it never wraps or shrinks); the mode note is the
+         flexible element, truncating and then disappearing as the window narrows
+         to share the screen with a DAW. */
       #topbar { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
-      #mode-note { font-size: 11px; color: var(--muted); margin-right: auto; }
+      #topbar h1 { flex: 0 0 auto; white-space: nowrap; }
+      #mode-note { flex: 1 1 0; min-width: 0; font-size: 11px; color: var(--muted); margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      #open-output { flex: 0 0 auto; }
+      @media (max-width: 620px) { #mode-note { display: none; } }
 
       /* Design mode (default): live preview left, scrollable control sidebar right. */
       #layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px; padding: 14px; }
