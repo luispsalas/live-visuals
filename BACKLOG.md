@@ -76,7 +76,22 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 - ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
   "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
   audio). Workflow documented in README → "Recording a demo".
-- **Sample GIF / clip as a README illustration** — review options for showing the tool
+- **Illustrative reference images** — the most-felt gap before going public: this is a
+  *visual* tool whose front page shows no visuals, so a reader cannot tell what it
+  does. Cheaper and more flexible than the GIF below, and worth doing first:
+  - a **hero still** at the top of the README — one strong frame that says what this is;
+  - a **UI screenshot** of the control panel in design mode, so the guide can point at
+    real controls instead of describing them;
+  - a small **gallery of example looks** (a few generative sources, a camera key, a
+    degraded/retro look) to show range;
+  - reuse the same stills as **blend-mode thumbnails** (see the item further down) so
+    one capture session covers everything.
+  Decide where they live (an `assets/` or `docs/` folder in-repo is simplest and keeps
+  the Markdown portable) and keep them modest in size. Static images have none of the
+  GIF's weight problem and render everywhere, including outside github.com.
+- **Sample GIF / clip as a README illustration** — the motion counterpart to the stills
+  above; do it after them, since a still already fixes the "cannot see what it does"
+  problem at a fraction of the effort. review options for showing the tool
   in motion at the top of the README, since text alone doesn't convey what it does.
   Source material comes from the OBS workflow above. Points to weigh: an animated GIF
   is the only format that autoplays inline on GitHub, but it is heavyweight (keep it
