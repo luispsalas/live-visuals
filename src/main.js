@@ -659,7 +659,9 @@ function setPerformMode(on) {
 }
 
 ui.openOutput.addEventListener('click', () => {
-  outputWin = window.open('/output.html', 'live-visuals-output', 'width=1280,height=720');
+  // Relative, not '/output.html', so it also resolves when the app is hosted under
+  // a sub-path (e.g. GitHub Pages at /live-visuals/).
+  outputWin = window.open('output.html', 'live-visuals-output', 'width=1280,height=720');
   setPerformMode(true);
 });
 

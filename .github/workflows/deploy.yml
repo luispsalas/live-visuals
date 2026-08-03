@@ -1,0 +1,45 @@
+# Publishes the app to GitHub Pages so non-technical users can just open a link —
+# no Node, no terminal, no install.
+#
+# To switch it on (once): repo Settings -> Pages -> Source: "GitHub Actions".
+# Note: Pages on a private repo needs a paid GitHub plan; on the free plan the
+# repo must be public. The app is MIT-licensed, so making it public is fine —
+# but that is a deliberate choice, hence this workflow also runs manually only
+# until you add a push trigger.
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

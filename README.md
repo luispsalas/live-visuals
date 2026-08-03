@@ -10,20 +10,59 @@ Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control 
 
 > Early and evolving; built to grow progressively.
 
-## Quick start
+## Start here
 
-1. Install [BlackHole 2ch](https://existential.audio/blackhole/). In *Audio MIDI Setup*
-   make a **Multi-Output Device** (BlackHole + your speakers) and set it as your DAW's
-   output, so you still hear sound.
-2. `npm install && npm run dev`, then open the printed URL in **Chrome**.
-   Click **Refresh → pick BlackHole → Start**.
-3. Click **Open output window →**, drag it onto your projector (extended display),
-   and press **f** for fullscreen.
+**New to this? Read the [User Guide](USER-GUIDE.md).** It walks through everything in
+plain language, step by step, for both **Mac and Windows** — no technical background
+assumed.
 
-**Just want to look around?** Skip steps 1–2: click **No sound** instead of Start and
-the engine runs with no audio device at all.
+### The 60-second version
 
-The in-app **How to run** panel has the full checklist.
+You need **Google Chrome**. That's it to look around:
+
+1. Open the app in Chrome.
+2. Click **No sound** (next to Start). Visuals start moving immediately.
+3. Pick different **Source A** / **Source B** and drag the sliders.
+
+That runs the whole engine with no audio, no setup, and nothing installed — the fastest
+way to see what it does.
+
+### To make it react to your music
+
+One extra piece: the app can't hear your computer's sound on its own, so you install a
+free "virtual cable" that passes audio to it. Pick your platform:
+
+| | Install | Then |
+|---|---|---|
+| **Mac** | [BlackHole 2ch](https://existential.audio/blackhole/) | In *Audio MIDI Setup*, make a **Multi-Output Device** ticking BlackHole **+ your speakers**, and set it as your DAW's output — so you still hear sound. |
+| **Windows** | [VB-CABLE](https://vb-audio.com/Cable/) | Set your DAW's output to **CABLE Input**. To keep hearing sound, turn on "Listen to this device" for **CABLE Output** in Sound settings, or use [VoiceMeeter](https://vb-audio.com/Voicemeeter/) instead. |
+
+Then in the app: **Refresh → pick BlackHole (Mac) / CABLE Output (Windows) → Start**.
+Play something — the meters should move.
+
+> The Windows path is documented but has not been tested first-hand yet. If you hit a
+> snag, the **No sound** mode above works on any machine.
+
+### To project it
+
+Click **Open output window →**, drag that window onto your projector or second screen,
+and press **f** for fullscreen. Keep the control panel on your laptop.
+
+The in-app **How to run** panel repeats this checklist while you work.
+
+<details>
+<summary><b>Running it from source (developers)</b></summary>
+
+Requires [Node.js](https://nodejs.org) (LTS):
+
+```
+npm install
+npm run dev
+```
+
+Then open the printed URL in Chrome. `npm run build` produces a static `dist/` folder
+that can be dropped on any web host — there is no server component.
+</details>
 
 ## Controls
 
@@ -44,7 +83,7 @@ The in-app **How to run** panel has the full checklist.
 - **Share the screen with your DAW:** the panel is a slim vertical column when the window is narrow, and flows into multiple columns when wide — just resize.
 - **For tight sync,** type or tap the BPM rather than trusting the drifting auto-estimate.
 - **Layer motion:** let transients drive zoom/brightness while a slow BPM loop drifts the colour — two rhythms read as more musical than one.
-- **On a 4K projector or if frames drop,** lower **Quality** to ~60–75% and keep the laptop plugged in.
+- **If frames drop,** see Performance below — **Quality** is the first knob to reach for.
 - **Sharing one controller with your DAW:** learn the app to controls the DAW doesn't use (e.g. one pad bank for clips, the other for visuals) — the OS lets both read the same device at once, and the app only reacts to what you've learned.
 - **No DAW needed to build looks:** **No sound** mode plus a tapped BPM is enough to design and save presets anywhere.
 
@@ -57,6 +96,35 @@ The in-app **How to run** panel has the full checklist.
 - **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.
 - **Retro decay:** **Posterize** ~0.7 + **Scanlines** ~0.5 + a little **Grain** turns any source into degraded broadcast footage. Add **Pixelate** on top for early-video-game blocks.
 - **Play the visuals with your body:** route **Motion → Crossfade** at full depth — standing still holds Source A, moving pushes toward Source B. Add **Motion → Feedback** so gestures leave trails. Three rhythms at once (transients, tempo, movement) is the point.
+
+## Performance
+
+The app runs entirely on the GPU and is built to hold a steady frame rate for hours.
+If it stutters, work down this list — the first two fix almost everything.
+
+1. **Lower Quality** (Output module). This is the big one: it renders internally at a
+   fraction of the resolution and scales up, so the GPU shades far fewer pixels. Try
+   **60–75%** on a 1080p projector, **40–50%** on 4K. The image softens slightly;
+   the motion gets much smoother.
+2. **Plug the laptop in.** On battery, macOS and Windows both throttle the GPU hard —
+   often the single biggest cause of stutter, and the easiest to miss.
+3. **Close other GPU-hungry apps** — other browser tabs (especially video), video calls,
+   and anything else rendering. A second Chrome window playing YouTube competes directly.
+4. **Turn off what you are not using.** **Feedback** and high **Pixelate** are the most
+   expensive controls; **Motion** does a little CPU work each frame; a **camera or video
+   source** costs more than a generative one.
+5. **Mirror rather than extend** only as a last resort — extended displays are better for
+   performing, but driving one large display is cheaper than two.
+
+**What is already handled for you:** GPU memory is allocated once and reused, so a long
+set will not creep upward; audio and motion analysis run on the audio clock, so they keep
+working when the output window goes fullscreen and the control panel is hidden; and the
+inline preview drops to 15 fps at half resolution automatically once you open the output
+window, so you are never paying to render the same thing twice at full cost.
+
+**Rough expectations:** a recent laptop drives 1080p at 100% Quality comfortably. For 4K,
+start at 50% and raise it while watching for dropped frames. Older or integrated graphics:
+start at 50% regardless of resolution.
 
 ## Recording a demo
 

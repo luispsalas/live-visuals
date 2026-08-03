@@ -91,6 +91,21 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   one file or two. Pairs with `USER-GUIDE.md` (also a draft) and with the unresolved
   "friendly launcher" question, which changes the install answers.
 
+## Sharing / distribution
+- ~~**Friendly launcher for non-technical users**~~ — **resolved: host it.** The app is
+  pure client-side, so `npm run build` produces a static `dist/` that runs from any
+  host. `vite.config.js` uses `base: './'` and the output window opens by relative
+  path, both verified against a simulated sub-path deploy. A manual-dispatch GitHub
+  Pages workflow is in `.github/workflows/deploy.yml`.
+  **Remaining decision (yours):** Pages on a *private* repo needs a paid GitHub plan;
+  on the free plan the repo must be public. Alternatives: Netlify or Vercel free tiers
+  deploy from a private repo. Nothing has been published yet.
+- **Verify the Windows audio path first-hand** — the VB-CABLE steps in the user guide
+  follow the standard setup but have not been tested on a real Windows machine. Flagged
+  as unverified in both the README and the guide until someone runs it.
+- **Blend-mode thumbnails for the guide** — a before/after image per mode would beat
+  the prose table. Pairs with the README GIF item.
+
 ## Housekeeping
 - ~~**Choose a licence**~~ — **done. MIT** (see `LICENSE`), matching the Three.js and
   Vite dependency stack. Repo is still private; making it public is a separate step,
