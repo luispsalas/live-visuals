@@ -148,6 +148,21 @@ Vite + Three.js. The control window analyses audio and streams state to the outp
 window over a `BroadcastChannel`; the output window owns the WebGL renderer. Audio
 analysis runs on a Web Audio clock so reactivity survives fullscreen.
 
+## Privacy & security
+
+**Nothing you feed this app ever leaves your computer.** There is no server, no
+account, no analytics, and no network calls of any kind — audio, camera and video are
+processed locally on your GPU and discarded. Saved presets and MIDI mappings live in
+your own browser's storage.
+
+- **Permissions:** Chrome will ask for microphone access (that is how it reads the
+  virtual audio cable) and, if you use the camera or Motion, camera access. Both are
+  revocable any time via the padlock icon in the address bar.
+- **MIDI** is requested without SysEx, so the app can read your controller but cannot
+  reprogram it.
+- **Dependencies:** the shipped app depends only on Three.js. `npm audit` reports zero
+  vulnerabilities.
+
 ## Licence
 
 [MIT](LICENSE) — free to use, modify, and share, including commercially; just keep

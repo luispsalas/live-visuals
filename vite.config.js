@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 // Two HTML entry points: the control window (laptop) and the output window (projector).
 export default defineConfig({
@@ -10,8 +10,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        output: resolve(__dirname, 'output.html'),
+        main: resolve(import.meta.dirname, 'index.html'),
+        output: resolve(import.meta.dirname, 'output.html'),
       },
     },
   },
