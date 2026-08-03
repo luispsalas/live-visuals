@@ -17,19 +17,44 @@ export class AudioEngine {
     return devices.filter((d) => d.kind === 'audioinput');
   }
 
+  // Raw signal, no browser "helpfulness" — these would fight a music feed.
+  static RAW = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+
   // Start capturing from the given deviceId. Must be called from a user gesture.
   async start(deviceId) {
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        deviceId: deviceId ? { exact: deviceId } : undefined,
-        // Disable processing so we get the raw signal from the DAW via BlackHole.
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false,
-      },
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { deviceId: deviceId ? { exact: deviceId } : undefined, ...AudioEngine.RAW },
       video: false,
     });
+    return this._setup(stream);
+  }
 
+  // Zero-install alternative: Chrome's screen-share picker can hand back the
+  // system's own audio, so no virtual audio cable has to be installed. This is
+  // the practical route on Windows, where BlackHole does not exist.
+  //
+  // Platform reality: on Windows, choosing "Entire Screen" and ticking "Also share
+  // system audio" captures everything the machine plays, including a DAW. On macOS
+  // Chrome cannot share system audio — only a browser tab's audio — so a Mac user
+  // driving a DAW still needs BlackHole. Must be called from a user gesture.
+  async startSystemAudio() {
+    // video:true is required for the picker to appear at all; we throw the video
+    // track away immediately and keep only the audio.
+    const shared = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: AudioEngine.RAW,
+    });
+    shared.getVideoTracks().forEach((t) => t.stop());
+    const audio = shared.getAudioTracks();
+    if (!audio.length) {
+      shared.getTracks().forEach((t) => t.stop());
+      throw new Error('No audio was shared — re-run and tick "Share system audio" (or "Share tab audio") in the picker.');
+    }
+    return this._setup(new MediaStream(audio));
+  }
+
+  async _setup(stream) {
+    this.stream = stream;
     this.ctx = new AudioContext();
     if (this.ctx.state === 'suspended') await this.ctx.resume();
 

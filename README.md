@@ -29,8 +29,15 @@ way to see what it does.
 
 ### To make it react to your music
 
-One extra piece: the app can't hear your computer's sound on its own, so you install a
-free "virtual cable" that passes audio to it. Pick your platform:
+A browser can't listen to your computer's audio unaided. Two ways round it:
+
+**Option A — click "System audio" (nothing to install).** Chrome hands the app your
+computer's sound through its screen-share dialog; the video is discarded immediately.
+On **Windows** pick *Entire Screen* and tick **"Also share system audio"** — that
+captures your DAW. On **Mac**, Chrome can only share a *browser tab's* audio, so this
+covers music playing in a tab but not a DAW.
+
+**Option B — a virtual audio cable** (needed for a DAW on Mac):
 
 | | Install | Then |
 |---|---|---|
@@ -40,8 +47,13 @@ free "virtual cable" that passes audio to it. Pick your platform:
 Then in the app: **Refresh → pick BlackHole (Mac) / CABLE Output (Windows) → Start**.
 Play something — the meters should move.
 
-> The Windows path is documented but has not been tested first-hand yet. If you hit a
-> snag, the **No sound** mode above works on any machine.
+> The Windows instructions follow standard setups but have not been tested first-hand
+> yet. **No sound** works anywhere, and **System audio** installs nothing.
+
+**Chrome will ask for permissions** — microphone (the only way a browser can receive
+audio), screen-share (only for System audio; video is thrown away), and camera (only
+for the Camera/Motion features). The [User Guide](USER-GUIDE.md#2-what-chrome-will-ask-permission-for-and-why)
+explains each one, and *Privacy & security* below covers what the app does with them.
 
 ### To project it
 

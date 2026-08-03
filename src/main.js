@@ -116,6 +116,7 @@ const ui = {
   quality: el('quality'),
   qualityVal: el('quality-val'),
   noSound: el('no-sound'),
+  systemAudio: el('system-audio'),
   midiConnect: el('midi-connect'),
   midiReset: el('midi-reset'),
   midiStatus: el('midi-status'),
@@ -569,8 +570,29 @@ async function start() {
     audio.onFrame = analyzeFrame; // driven by the audio clock (survives fullscreen)
     ui.status.textContent = 'Running — play audio in your DAW.';
     ui.start.classList.add('on');
+    ui.systemAudio.classList.remove('on');
   } catch (e) {
     ui.status.textContent = `Could not start audio: ${e.message}`;
+  }
+}
+
+// Capture the computer's own audio through Chrome's share picker instead of an
+// input device — no virtual audio cable to install. The practical route on Windows;
+// on macOS Chrome only offers tab audio, so a DAW there still needs BlackHole.
+async function startSystemAudio() {
+  stopNoSound();
+  try {
+    const analyser = await audio.startSystemAudio();
+    features = new Features(analyser, audio.sampleRate);
+    audio.onFrame = analyzeFrame;
+    ui.status.textContent = 'Running on shared system audio — play something.';
+    ui.systemAudio.classList.add('on');
+    ui.start.classList.remove('on');
+  } catch (e) {
+    // Cancelling the picker throws too; that is not worth showing as an error.
+    ui.status.textContent = e.name === 'NotAllowedError'
+      ? 'System audio sharing cancelled.'
+      : `Could not capture system audio: ${e.message}`;
   }
 }
 
@@ -589,7 +611,8 @@ function startNoSound() {
   noSoundActive = true;
   ui.noSound.textContent = 'No sound: on';
   ui.noSound.classList.add('on');
-  ui.start.classList.remove('on'); // the two are mutually exclusive
+  ui.start.classList.remove('on');       // the three audio modes are mutually exclusive
+  ui.systemAudio.classList.remove('on');
   ui.status.textContent = 'No sound mode — engine running, BPM loops active.';
   noSoundFrame();
 }
@@ -642,6 +665,7 @@ channel.on((type) => {
 ui.refresh.addEventListener('click', refreshInputs);
 ui.start.addEventListener('click', start);
 ui.noSound.addEventListener('click', () => { if (noSoundActive) stopNoSound(); else startNoSound(); });
+ui.systemAudio.addEventListener('click', startSystemAudio);
 
 // Design mode (default): inline preview + sidebar. Perform mode (output window
 // open): the panel returns to the slim card grid that shares the screen with

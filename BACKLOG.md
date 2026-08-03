@@ -100,9 +100,11 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   **Remaining decision (yours):** Pages on a *private* repo needs a paid GitHub plan;
   on the free plan the repo must be public. Alternatives: Netlify or Vercel free tiers
   deploy from a private repo. Nothing has been published yet.
-- **Verify the Windows audio path first-hand** — the VB-CABLE steps in the user guide
-  follow the standard setup but have not been tested on a real Windows machine. Flagged
-  as unverified in both the README and the guide until someone runs it.
+- **Verify the Windows audio paths first-hand** — two routes now exist and neither has
+  been run on real Windows hardware: **System audio** (`getDisplayMedia` + "Also share
+  system audio", no install — the code path is unit-tested with a synthetic stream but
+  the Chrome picker behaviour is not) and **VB-CABLE**. Flagged as unverified in the
+  README and guide until someone runs them.
 - **Blend-mode thumbnails for the guide** — a before/after image per mode would beat
   the prose table. Pairs with the README GIF item.
 

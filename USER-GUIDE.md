@@ -25,13 +25,53 @@ only needed for specific things.
 
 ---
 
-## 2. Making it react to your music
+## 2. What Chrome will ask permission for (and why)
+
+Chrome will show one or two permission pop-ups. They look alarming out of context,
+so here is exactly what each one is and what it does:
+
+| Chrome asks | Why the app needs it | What actually happens |
+|---|---|---|
+| **"Use your microphone?"** | This is the only way a browser can receive audio — including from the virtual cable carrying your music. | It reads whichever input **you** pick in the dropdown. It is not recording you, and nothing is sent anywhere. |
+| **"Share your screen?"** | Only if you click **System audio**. Chrome has no "just give me the sound" option, so it uses the screen-share dialog to hand over audio. | The app **immediately discards the video** and keeps only the sound. |
+| **"Use your camera?"** | Only if you turn on **Camera** or **Motion**. | The picture is drawn on screen and used for motion detection, then discarded. |
+
+**Nothing leaves your computer.** The app has no server, no account and no analytics —
+it makes no internet connections at all. Everything is processed on your machine and
+thrown away frame by frame. Saved presets live in your own browser.
+
+You can review or revoke any of this at any time by clicking the icon at the left of
+Chrome's address bar. If you never use the camera or audio features, you are never
+asked at all.
+
+---
+
+## 3. Making it react to your music
 
 The app cannot hear your computer's sound by itself — browsers aren't allowed to
-listen to whatever is playing. So you install a small free "virtual cable" that
-carries sound from your music software into the app. You do this once.
+listen to whatever is playing. There are two ways to solve that.
 
-### On a Mac
+### Option A — "System audio" (no installing; best on Windows)
+
+Click **System audio** in the Audio panel. Chrome opens its share dialog:
+
+- **Windows:** choose **Entire Screen**, tick **"Also share system audio"** at the
+  bottom, and click Share. The app now hears everything your computer plays,
+  including your music software.
+- **Mac:** Chrome can only share the audio of a **browser tab**, not the whole
+  system. So this works if your music is playing in a Chrome tab (YouTube, Spotify
+  web, SoundCloud) — pick the **Chrome Tab** option and tick *Share tab audio*. For a
+  DAW on a Mac, use Option B instead.
+
+The app throws the video away and keeps only the sound. Chrome will show a
+"sharing your screen" bar — that is expected, and you can ignore it.
+
+### Option B — a virtual audio cable (needed for a DAW on Mac)
+
+A small free tool that pipes sound from your music software into the app. Set it up
+once.
+
+#### On a Mac
 
 1. Download and install **[BlackHole 2ch](https://existential.audio/blackhole/)**
    (free; you give an email address and they send the download link).
@@ -47,7 +87,7 @@ carries sound from your music software into the app. You do this once.
 *Note: with a Multi-Output Device selected, the Mac's volume keys stop working. Use
 your music software's volume or your speaker's own knob instead.*
 
-### On a Windows PC
+#### On a Windows PC (only if you skipped Option A)
 
 1. Download and install **[VB-CABLE](https://vb-audio.com/Cable/)** (free; run the
    installer as Administrator, then restart).
@@ -60,13 +100,14 @@ your music software's volume or your speaker's own knob instead.*
 *If that feels fiddly, [VoiceMeeter](https://vb-audio.com/Voicemeeter/) (also free)
 does the same job with a proper mixer window, at the cost of a longer setup.*
 
-> **Honest status:** the Mac path is tested and used regularly. The Windows path
-> follows the standard VB-CABLE setup but has not been verified first-hand yet. If
-> something doesn't match, **No sound** mode still works perfectly on any machine.
+> **Honest status:** the Mac/BlackHole path is tested and used regularly. The Windows
+> instructions follow the standard setups but have not been verified first-hand yet.
+> If something doesn't match, **No sound** mode works on any machine, and **System
+> audio** needs nothing installed.
 
 ---
 
-## 3. The two views: Design vs Performance
+## 4. The two views: Design vs Performance
 
 The app has two modes. You don't set them manually — opening the output window
 switches you into Performance, closing it returns you to Design.
@@ -82,7 +123,7 @@ To go back to Design view, just close the output window.
 
 ---
 
-## 4. Blend modes — how two visuals combine
+## 5. Blend modes — how two visuals combine
 
 You can run **two sources at once** (Source A and Source B) and choose how they
 overlap. The **Crossfade** slider fades between them; the **Blend** menu changes
@@ -108,7 +149,7 @@ faster than the words do.)*
 
 ---
 
-## 5. Everyday use (quick version)
+## 6. Everyday use (quick version)
 
 1. Start your music; the audio meters in the app should move. (No music? Click
    **No sound** and everything still animates.)
@@ -127,7 +168,7 @@ faster than the words do.)*
 
 ---
 
-## 6. If it stutters
+## 7. If it stutters
 
 Work down this list; the first two fix almost everything.
 
@@ -142,7 +183,7 @@ Work down this list; the first two fix almost everything.
 
 ---
 
-## 7. Running from a folder
+## 8. Running from a folder
 
 Only needed if you were given the project files rather than a web link. You will need
 **[Node.js](https://nodejs.org)** (choose the big **LTS** button and click through the

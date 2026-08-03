@@ -122,6 +122,7 @@
           <select id="inputs"></select>
           <button id="refresh">Refresh</button>
           <button id="start">Start</button>
+          <button id="system-audio" title="Capture the computer's own audio via Chrome's share picker — no driver to install (best on Windows)">System audio</button>
           <button id="no-sound">No sound</button>
         </div>
         <div class="row"><span id="status"></span></div>
@@ -209,7 +210,9 @@
           <ol>
             <li><b>Audio routing (once):</b> install <b>BlackHole 2ch</b>. In <i>Audio MIDI Setup</i> create a <b>Multi-Output Device</b> (tick BlackHole + your speakers/interface) and set it as your DAW's output — so you still hear sound while the app reads BlackHole.</li>
             <li><b>Start:</b> open this page in <b>Chrome</b>. Click <code>Refresh</code>, pick <b>BlackHole</b>, then <code>Start</code>. Play something in your DAW — the meters should move.</li>
-            <li><b>No audio?</b> Click <code>No sound</code> instead of <code>Start</code>: the engine runs with no input at all, so generative sources, BPM loops and Motion keep animating. Good for designing looks away from the DAW or testing the projector. <code>Start</code> hands back to real audio.</li>
+            <li><b>No cable to install?</b> Click <code>System audio</code> instead: Chrome shares your computer's sound through its screen-share dialog (the app discards the video). On Windows pick <i>Entire Screen</i> + tick <b>"Also share system audio"</b>. On Mac Chrome only offers a browser tab's audio, so a DAW there still needs BlackHole.</li>
+            <li><b>No audio at all?</b> Click <code>No sound</code> instead of <code>Start</code>: the engine runs with no input, so generative sources, BPM loops and Motion keep animating. Good for designing looks away from the DAW or testing the projector. <code>Start</code> hands back to real audio.</li>
+            <li><b>Permissions:</b> Chrome asks for the <b>microphone</b> (the only way a browser can receive audio — it reads whichever input you pick), <b>screen share</b> (only for <code>System audio</code>; the video is discarded), and the <b>camera</b> (only for Camera/Motion). Nothing is transmitted anywhere — the app makes no network connections. Revoke any of it via the icon at the left of the address bar.</li>
             <li><b>Project:</b> click <code>Open output window →</code>, drag it onto your projector (extended display, not mirrored), and press <code>f</code> for fullscreen. Keep this control window visible on the laptop.</li>
             <li><b>Perform:</b> pick sources A/B + crossfade, tweak colour/effects, choose a <b>Reactivity</b> mode. Set <b>BPM</b> (or <code>Tap</code>) and enable <b>BPM loops</b> for tempo-synced counterpoint motion.</li>
             <li><b>Presets:</b> <code>Save current</code> names a look (recall with its button, keys <b>1–8</b> for the first eight, or a learned MIDI pad/key).</li>
