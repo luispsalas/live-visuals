@@ -22,7 +22,7 @@ export class AudioEngine {
     this.stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         deviceId: deviceId ? { exact: deviceId } : undefined,
-        // Disable processing so we get the raw signal from Ableton/BlackHole.
+        // Disable processing so we get the raw signal from the DAW via BlackHole.
         echoCancellation: false,
         noiseSuppression: false,
         autoGainControl: false,

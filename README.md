@@ -66,8 +66,8 @@ audio straight from BlackHole — the same feed the app analyzes).
 
 1. Start the app and open the output window (it can stay windowed — no need for fullscreen).
 2. Open OBS. In the **Demo** scene, double-click **Output window** and pick the Chrome
-   window titled *Live Visuals — Output* (once per session; grant Screen Recording
-   permission the first time).
+   window titled *Live Audio-Reactive Visuals — Output* (once per session; grant Screen
+   Recording permission the first time).
 3. Play something in your DAW — the audio meter should move. Click **Start Recording**,
    perform, **Stop Recording**. The MP4 lands in `~/Movies`.
 

@@ -9,7 +9,7 @@
 //
 // Because bindings are tied to specific note/CC numbers, the app only reacts to
 // the controls you actually learn here. That's how it shares a controller with
-// Ableton without collision: learn the app to controls Ableton doesn't use
+// a DAW without collision: learn the app to controls the DAW doesn't use
 // (e.g. one pad bank vs the other — see README).
 
 const STORAGE_KEY = 'live-visuals-midi';

@@ -12,7 +12,7 @@ import { createChannel } from './sync.js';
 
 // Control window (laptop): captures audio, computes + shapes features, shows the
 // control panel, reads the MIDI controller, and streams everything to the output
-// window. Keep Ableton + this panel on the laptop; output goes to the projector.
+// window. Keep your DAW + this panel on the laptop; output goes to the projector.
 const channel = createChannel();
 const audio = new AudioEngine();
 const midi = new MidiInput();
@@ -328,6 +328,7 @@ function enableCamera(on) {
   cameraOn = on;
   channel.send('camera', { on, deviceId: cameraDeviceId });
   ui.camera.textContent = on ? 'Camera: on' : 'Camera: off';
+  ui.camera.classList.toggle('on', on);
 }
 
 // List the available cameras (external, virtual, built-in) in the picker. Labels
@@ -566,7 +567,8 @@ async function start() {
     const analyser = await audio.start(ui.inputs.value);
     features = new Features(analyser, audio.sampleRate);
     audio.onFrame = analyzeFrame; // driven by the audio clock (survives fullscreen)
-    ui.status.textContent = 'Running — play audio in Ableton.';
+    ui.status.textContent = 'Running — play audio in your DAW.';
+    ui.start.classList.add('on');
   } catch (e) {
     ui.status.textContent = `Could not start audio: ${e.message}`;
   }
@@ -586,6 +588,8 @@ function noSoundFrame() {
 function startNoSound() {
   noSoundActive = true;
   ui.noSound.textContent = 'No sound: on';
+  ui.noSound.classList.add('on');
+  ui.start.classList.remove('on'); // the two are mutually exclusive
   ui.status.textContent = 'No sound mode — engine running, BPM loops active.';
   noSoundFrame();
 }
@@ -595,6 +599,7 @@ function stopNoSound() {
   noSoundActive = false;
   cancelAnimationFrame(noSoundRafId);
   ui.noSound.textContent = 'No sound';
+  ui.noSound.classList.remove('on');
 }
 
 // Called from the audio thread each block (not requestAnimationFrame), so it keeps
@@ -640,7 +645,7 @@ ui.noSound.addEventListener('click', () => { if (noSoundActive) stopNoSound(); e
 
 // Design mode (default): inline preview + sidebar. Perform mode (output window
 // open): the panel returns to the slim card grid that shares the screen with
-// Ableton, and the preview shrinks to a low-power corner monitor (15 fps, half
+// the DAW, and the preview shrinks to a low-power corner monitor (15 fps, half
 // resolution) so it costs almost nothing next to the real output. Closing the
 // output window returns to design mode automatically.
 const preview = attachRenderer(ui.previewCanvas);

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Live Visuals — Control</title>
+    <title>Live Audio-Reactive Visuals — Control</title>
     <style>
       :root {
         --bg: #0f1012;
@@ -32,7 +32,7 @@
       @media (max-width: 900px) { #layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } }
 
       /* Perform mode (output window open): the panel becomes the original slim
-         responsive card grid to share the screen with Ableton, and the preview
+         responsive card grid to share the screen with the DAW, and the preview
          shrinks to a fixed low-power corner monitor. */
       body.perform { overflow: auto; display: block; height: auto; min-height: 100vh; }
       body.perform #preview-pane { position: fixed; right: 14px; bottom: 14px; width: 240px; z-index: 10; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55); }
@@ -52,6 +52,10 @@
       }
       input[type="number"], input[type="text"] { cursor: text; }
       button:hover { background: #2e3138; border-color: #3a3d45; }
+      /* Toggle buttons that are currently active (No sound, Camera) — tinted with
+         the accent so "on" is readable at a glance during a performance. */
+      button.on { background: rgba(110, 168, 254, 0.18); border-color: var(--accent); color: #dbe8ff; }
+      button.on:hover { background: rgba(110, 168, 254, 0.28); border-color: var(--accent); }
       .row > select, .row > input[type="range"], .row > input[type="number"] { flex: 1 1 120px; min-width: 0; }
       input[type="range"] { padding: 0; accent-color: var(--accent); }
       input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
@@ -97,7 +101,7 @@
   </head>
   <body>
     <header id="topbar">
-      <h1>Live Visuals</h1>
+      <h1>Live Audio-Reactive Visuals</h1>
       <span id="mode-note">Design mode — visuals render in the preview.</span>
       <button id="open-output">Open output window →</button>
     </header>
@@ -197,8 +201,9 @@
         <details>
           <summary>Show setup &amp; usage</summary>
           <ol>
-            <li><b>Audio routing (once):</b> install <b>BlackHole 2ch</b>. In <i>Audio MIDI Setup</i> create a <b>Multi-Output Device</b> (tick BlackHole + your speakers/interface) and set it as Ableton's output — so you still hear sound while the app reads BlackHole.</li>
-            <li><b>Start:</b> open this page in <b>Chrome</b>. Click <code>Refresh</code>, pick <b>BlackHole</b>, then <code>Start</code>. Play a clip in Ableton — the meters should move.</li>
+            <li><b>Audio routing (once):</b> install <b>BlackHole 2ch</b>. In <i>Audio MIDI Setup</i> create a <b>Multi-Output Device</b> (tick BlackHole + your speakers/interface) and set it as your DAW's output — so you still hear sound while the app reads BlackHole.</li>
+            <li><b>Start:</b> open this page in <b>Chrome</b>. Click <code>Refresh</code>, pick <b>BlackHole</b>, then <code>Start</code>. Play something in your DAW — the meters should move.</li>
+            <li><b>No audio?</b> Click <code>No sound</code> instead of <code>Start</code>: the engine runs with no input at all, so generative sources, BPM loops and Motion keep animating. Good for designing looks away from the DAW or testing the projector. <code>Start</code> hands back to real audio.</li>
             <li><b>Project:</b> click <code>Open output window →</code>, drag it onto your projector (extended display, not mirrored), and press <code>f</code> for fullscreen. Keep this control window visible on the laptop.</li>
             <li><b>Perform:</b> pick sources A/B + crossfade, tweak colour/effects, choose a <b>Reactivity</b> mode. Set <b>BPM</b> (or <code>Tap</code>) and enable <b>BPM loops</b> for tempo-synced counterpoint motion.</li>
             <li><b>Presets:</b> <code>Save current</code> names a look (recall with its button, keys <b>1–8</b> for the first eight, or a learned MIDI pad/key).</li>
