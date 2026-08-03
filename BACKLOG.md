@@ -25,7 +25,7 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
 
 ## Sources & FX
 - **Review the webcam-effects catalog for new effects** — work through the reference
-  table (Google Drive `1PQOHESuo55kcgsgtugP-avf7ZKfCucocOQDG3OR2JKQ`: ~85 effects in 11
+  table (the maintainer's private "html webcam" spreadsheet: ~85 effects in 11
   categories, each with its web technology, a performance rating, and the Max/Jitter
   equivalent) and decide what to add. Already covered by the app: hue/saturation,
   RGB split, glitch, feedback loop, luma key, kaleidoscope, tunnel, webcam mirror,

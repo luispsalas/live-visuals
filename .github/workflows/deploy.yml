@@ -4,11 +4,18 @@
 # To switch it on (once): repo Settings -> Pages -> Source: "GitHub Actions".
 # Note: Pages on a private repo needs a paid GitHub plan; on the free plan the
 # repo must be public. The app is MIT-licensed, so making it public is fine —
-# but that is a deliberate choice, hence this workflow also runs manually only
-# until you add a push trigger.
+# but that is a deliberate choice.
+#
+# Until Pages is enabled in Settings this workflow simply fails at the deploy
+# step; it does not affect the repo otherwise.
 name: Deploy to GitHub Pages
 
 on:
+  # Publish on every push to main, so editing a doc and pushing updates the live
+  # site the way you would expect — no manual step.
+  push:
+    branches: [main]
+  # ...and still runnable by hand from the Actions tab when needed.
   workflow_dispatch:
 
 permissions:
