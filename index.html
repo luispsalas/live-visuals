@@ -173,8 +173,9 @@
       </section>
 
       <section class="module">
-        <h2>Motion (camera movement drives visuals)</h2>
+        <h2>Motion (movement drives visuals)</h2>
         <div class="row"><label>Enable</label><button id="motion-on">Motion: off</button><span id="motion-status">camera off</span></div>
+        <div class="row"><label>Watch</label><select id="motion-source"><option value="camera">Camera</option><option value="video">Video file</option></select></div>
         <div class="row"><label>Motion</label><div class="meter motion"><span id="m-motion"></span></div></div>
         <div class="row"><label>Sensitivity</label><input id="motion-sens" type="range" min="0.2" max="4" step="0.1" value="1" /></div>
         <div id="motion-routes"></div>

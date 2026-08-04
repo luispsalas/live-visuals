@@ -36,7 +36,7 @@ const state = {
   keyOn: false, keySource: 'b', keyMode: 'luma',
   keyThreshold: 0.5, keySoftness: 0.1, keyInvert: false,
   // Camera movement as a control signal, routed onto parameters (stacks with loops).
-  motionOn: false, motionSens: 1,
+  motionOn: false, motionSens: 1, motionSource: 'camera',
   motionRoutes: [
     { target: 'mix',      enabled: false, depth: 0.5 },
     { target: 'feedback', enabled: false, depth: 0.5 },
@@ -108,6 +108,7 @@ const ui = {
   bpmDetected: el('bpm-detected'),
   loops: el('loops'),
   motionOn: el('motion-on'),
+  motionSource: el('motion-source'),
   motionSens: el('motion-sens'),
   motionStatus: el('motion-status'),
   motionRoutes: el('motion-routes'),
@@ -324,6 +325,7 @@ function updateControls() {
   for (const [name, p] of Object.entries(PARAMS)) p.el.value = String(state[name]);
   ui.motionOn.textContent = state.motionOn ? 'Motion: on' : 'Motion: off';
   ui.motionOn.classList.toggle('on', state.motionOn);
+  ui.motionSource.value = state.motionSource;
   ui.motionSens.value = String(state.motionSens);
   syncLoopRows();
   syncMotionRoutes();
@@ -383,6 +385,7 @@ function applyState(bundle) {
     b.motionSens = 1;
     b.motionRoutes = state.motionRoutes.map((r) => ({ ...r, enabled: false }));
   }
+  if (b.motionSource === undefined) b.motionSource = 'camera'; // presets saved before video-source motion
   Object.assign(state, b);
   updateControls();
   if (state.slotA === CAMERA_INDEX || state.slotB === CAMERA_INDEX) enableCamera(true);
@@ -429,17 +432,23 @@ function sendDynamics(now) {
   channel.send('state', eff);
 }
 
-// Sample the camera and update the meter. Driven by whichever clock is running
-// (audio or the no-sound fallback), never requestAnimationFrame on its own — the
-// control window gets throttled once the output window goes fullscreen.
+// Sample the chosen feed (camera or the video-file source) and update the meter.
+// Driven by whichever clock is running (audio or the no-sound fallback), never
+// requestAnimationFrame on its own — the control window gets throttled once the
+// output window goes fullscreen.
 function updateMotion(now) {
   motion.sensitivity = state.motionSens;
-  motion.setVideo(state.motionOn ? preview.renderer.cameraVideo() : null);
+  const fromVideoFile = state.motionSource === 'video';
+  const feed = state.motionOn
+    ? (fromVideoFile ? preview.renderer.videoFileVideo() : preview.renderer.cameraVideo())
+    : null;
+  motion.setVideo(feed);
   const m = motion.update(now);
   motionLevel = m.motion;
   ui.motionMeter.style.width = `${Math.min(m.motion * 100, 100)}%`;
   ui.motionStatus.textContent = !state.motionOn ? 'off'
-    : motion.video ? 'watching camera'
+    : motion.video ? (fromVideoFile ? 'watching video file' : 'watching camera')
+    : fromVideoFile ? 'no video file loaded — choose one above'
     : 'camera off — enable Camera above';
   return m;
 }
@@ -728,12 +737,18 @@ ui.scanlines.addEventListener('input', () => { state.scanlines = parseFloat(ui.s
 ui.grain.addEventListener('input', () => { state.grain = parseFloat(ui.grain.value); sendState(); });
 ui.reactivityMode.addEventListener('change', () => { state.reactivity = ui.reactivityMode.value; });
 
-// Motion: enabling it turns the camera on too, since it has nothing to watch otherwise.
+// Motion: enabling it turns the camera on too, when watching the camera — it has
+// nothing to watch otherwise. Watching the video file needs no such nudge; a file
+// is either already loaded or the status text says so.
 ui.motionOn.addEventListener('click', () => {
   state.motionOn = !state.motionOn;
   ui.motionOn.textContent = state.motionOn ? 'Motion: on' : 'Motion: off';
   ui.motionOn.classList.toggle('on', state.motionOn);
-  if (state.motionOn && !cameraOn) enableCamera(true);
+  if (state.motionOn && state.motionSource === 'camera' && !cameraOn) enableCamera(true);
+});
+ui.motionSource.addEventListener('change', () => {
+  state.motionSource = ui.motionSource.value;
+  if (state.motionOn && state.motionSource === 'camera' && !cameraOn) enableCamera(true);
 });
 ui.motionSens.addEventListener('input', () => { state.motionSens = parseFloat(ui.motionSens.value); });
 

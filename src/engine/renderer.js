@@ -94,6 +94,11 @@ export class Renderer {
     return this.cameraSource.stream ? this.cameraSource.video : null;
   }
 
+  // Same idea for a loaded video-file source (null until a file has been picked).
+  videoFileVideo() {
+    return this.videoSource.texture ? this.videoSource.video : null;
+  }
+
   // Difference key: freeze the current key-source frame as the background plate.
   captureKeyRef() {
     this.compositor.captureKeyRef();

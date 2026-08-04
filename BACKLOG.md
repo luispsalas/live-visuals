@@ -86,12 +86,16 @@ Rough, grouped by theme.
   value or the transient envelope is the better thing to route, only three route slots,
   no way to invert a route (movement *reducing* a parameter), and the meter giving no
   sense of where the motion is happening. Revisit after a real session with a camera.
-- **Motion analysis on a video-file source too** — the frame-differencer only watches
-  the live camera today; point it at the `<video>` of a playing video-file source as
-  well, so movement *within* a clip can drive parameters. Low complexity —
-  `motion.js`'s `setVideo()` already accepts any `<video>`; what's needed is a choice of
-  which feed to analyse (camera vs the video source) and reading the video source's
-  element. Pairs with the Motion tweaks above.
+- ~~**Motion analysis on a video-file source too**~~ — **done.** A **Watch** selector
+  (Camera / Video file) in the Motion module picks the feed; `motion.js` itself needed
+  no changes since `setVideo()` was already feed-agnostic. New `renderer.videoFileVideo()`
+  mirrors the existing `cameraVideo()` getter. Enabling Motion only auto-enables the
+  camera when Camera is the chosen feed (previously it always did); switching the
+  selector while Motion is already on re-evaluates that too. Verified: status text for
+  all four states (camera watching / camera off / video watching / no file loaded),
+  auto-enable-camera logic in all three scenarios, and preset save/restore including
+  migration of presets saved before this field existed (defaults to `'camera'`, applied
+  through the real `applyState()` path with a crafted legacy bundle, no throw).
 - **Text input as a visual layer** — review adding live text as a source/overlay
   (titles, lyrics, messages). Decisions to weigh: render approach (canvas-2D texture
   → GPU vs an HTML overlay on the output window), where it sits in the pipeline (its
