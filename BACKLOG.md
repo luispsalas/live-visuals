@@ -2,26 +2,31 @@
 
 Rough, grouped by theme.
 
-> **▶ Next session:** the **motion camera bug** (under Bugs). The UX cluster
-> (Crossfade-as-master clarity, Glitch → Degradation, fixed "No sound" label, clearer
-> Motion enable, Reset button) is **done** — see *UI & UX polish* below, all five
-> shipped and verified.
->
-> ⚠️ The motion bug **needs the user at a machine with a working webcam** — camera
-> capture is blocked in the agent's sandbox, so it cannot be reproduced or confirmed
-> fixed without hands-on testing. Have Chrome open with the camera available.
+> **▶ Next session:** nothing blocking. The UX cluster (Crossfade-as-master clarity,
+> Glitch → Degradation, fixed "No sound" label, clearer Motion enable, Reset button)
+> is **done** — see *UI & UX polish* below. The motion camera bug (under Bugs) did
+> not reproduce in a 2026-08-04 real-webcam session — see that entry for what that
+> does and doesn't prove before treating it as fixed.
 
 ## Bugs
-- **Motion sometimes doesn't perceive an open camera** *(intermittent — needs a real
-  webcam to repro; the sandbox blocks capture).* `updateMotion()` reads
-  `preview.renderer.cameraVideo()`, which only returns the `<video>` once
-  `cameraSource.stream` is set — so the likely cause is timing: the camera is enabled
-  but the stream/track isn't ready when motion first polls, or the video has no decoded
-  frames yet (motion.js resets `prev` whenever `readyState < 2` / `paused`, so it can
-  sit at zero and never accumulate). First diagnostics: log `readyState` / `paused` /
-  `videoWidth` while Motion is on; confirm the element motion reads is the same one the
-  preview opened; consider re-calling `setVideo` on the stream's `loadeddata` event, or
-  retrying until frames arrive. Related to the Motion tweaks item below.
+- **Motion sometimes doesn't perceive an open camera** *(intermittent — status:
+  unconfirmed, not fixed).* `updateMotion()` reads `preview.renderer.cameraVideo()`,
+  which only returns the `<video>` once `cameraSource.stream` is set — so the likely
+  cause is timing: the camera is enabled but the stream/track isn't ready when motion
+  first polls, or the video has no decoded frames yet (motion.js resets `prev` whenever
+  `readyState < 2` / `paused`, so it can sit at zero and never accumulate).
+  **2026-08-04:** tested with a real webcam, did not reproduce. No code in
+  `motion.js`/`updateMotion()` has changed since this was filed, so that's evidence the
+  bug is non-deterministic (e.g. a warm-up race that doesn't always lose), **not**
+  confirmation of a fix — an intermittent bug needs several clean sessions, ideally
+  covering the failure conditions below, before calling it closed. Downgraded from
+  "needs a repro session" to "watch for recurrence"; re-open the investigation below if
+  it happens again, ideally with the conditions noted (camera just enabled vs. already
+  running, tab backgrounded/foregrounded, etc.).
+  First diagnostics if it recurs: log `readyState` / `paused` / `videoWidth` while
+  Motion is on; confirm the element motion reads is the same one the preview opened;
+  consider re-calling `setVideo` on the stream's `loadeddata` event, or retrying until
+  frames arrive. Related to the Motion tweaks item below.
 
 ## Transitions
 - **Preset crossfade** — a short, tempo-aware dissolve between the outgoing and
