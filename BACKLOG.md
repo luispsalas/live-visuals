@@ -1,6 +1,15 @@
 # Backlog
 
-Rough, grouped by theme; a rough priority read lives at the bottom.
+Rough, grouped by theme.
+
+> **▶ Next session:** the **motion camera bug** (under Bugs) and the **UX cluster**
+> (all of *UI & UX polish*: Crossfade-as-master clarity, Glitch → Degradation, fixed
+> "No sound" label, clearer Motion enable, Reset button).
+>
+> ⚠️ The motion bug **needs the user at a machine with a working webcam** — camera
+> capture is blocked in the agent's sandbox, so it cannot be reproduced or confirmed
+> fixed without hands-on testing. Have Chrome open with the camera available. The
+> five UX items need no hardware and can be done and verified independently.
 
 ## Bugs
 - **Motion sometimes doesn't perceive an open camera** *(intermittent — needs a real
