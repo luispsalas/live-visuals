@@ -609,7 +609,6 @@ function noSoundFrame() {
 
 function startNoSound() {
   noSoundActive = true;
-  ui.noSound.textContent = 'No sound: on';
   ui.noSound.classList.add('on');
   ui.start.classList.remove('on');       // the three audio modes are mutually exclusive
   ui.systemAudio.classList.remove('on');
@@ -621,7 +620,6 @@ function stopNoSound() {
   if (!noSoundActive) return;
   noSoundActive = false;
   cancelAnimationFrame(noSoundRafId);
-  ui.noSound.textContent = 'No sound';
   ui.noSound.classList.remove('on');
 }
 
