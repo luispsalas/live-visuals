@@ -2,14 +2,14 @@
 
 Rough, grouped by theme.
 
-> **▶ Next session:** the **motion camera bug** (under Bugs) and the **UX cluster**
-> (all of *UI & UX polish*: Crossfade-as-master clarity, Glitch → Degradation, fixed
-> "No sound" label, clearer Motion enable, Reset button).
+> **▶ Next session:** the **motion camera bug** (under Bugs). The UX cluster
+> (Crossfade-as-master clarity, Glitch → Degradation, fixed "No sound" label, clearer
+> Motion enable, Reset button) is **done** — see *UI & UX polish* below, all five
+> shipped and verified.
 >
 > ⚠️ The motion bug **needs the user at a machine with a working webcam** — camera
 > capture is blocked in the agent's sandbox, so it cannot be reproduced or confirmed
-> fixed without hands-on testing. Have Chrome open with the camera available. The
-> five UX items need no hardware and can be done and verified independently.
+> fixed without hands-on testing. Have Chrome open with the camera available.
 
 ## Bugs
 - **Motion sometimes doesn't perceive an open camera** *(intermittent — needs a real
@@ -96,32 +96,25 @@ Rough, grouped by theme.
   and lets you luma-key a camera through the letterforms.
 
 ## UI & UX polish
-- **Make Crossfade's master role evident** — the compositor does
-  `amount = uMix; if (key) amount *= mask; out = mix(a, blended, amount)`, so with
-  **Crossfade at 0 the blend *and* the luma key do nothing** (the output is pure Source
-  A). Users hit this as "the key doesn't work." Decide a real fix, not just a label:
-  options are relabelling Crossfade to signal it's the A↔B master, showing a hint when
-  Key is on while Crossfade is 0, auto-nudging mix when the key is enabled, or making
-  the key independent of mix. Pick one deliberately.
-- **Move Glitch into the Degradation module** — it's a destruction/degradation effect
-  currently sitting in Mix & effects; it belongs next to Pixelate / Posterize /
-  Scanlines / Grain. Pure relocation — the uniform already lives in the display pass
-  (`feedbackPass.js`) — and it stays a normal PARAM, so MIDI and motion routing are
-  unaffected. Just move the slider's row and keep the state key.
-- **"No sound" as a fixed-label button** — now that the active state is shown by the
-  accent tint, the label no longer needs to flip to "No sound: on". Keep the text
-  constant and let the tint carry the state (Camera/Start already work this way once
-  the label is dropped). Small consistency fix.
-- **Motion "Enable" on/off is unclear** — it's a bare checkbox while the audio modes
-  use tinted toggle buttons, so the affordance is inconsistent and the on-state is easy
-  to miss mid-performance. Make it read clearly: a tinted toggle button matching No
-  sound / Camera, or at least a distinct on/off label. Consistency with the buttons
-  above.
-- **Add a "Reset" button (return to initial values)** — one click to put all the
-  look/effect controls back to defaults, with a confirm like the MIDI reset. Scope it
-  to the `state` params + their sliders; leave tempo, Quality, MIDI bindings and saved
-  presets untouched (match what presets already treat as global/out-of-scope). Handy as
-  a clean-slate or panic during a set.
+- ~~**Make Crossfade's master role evident**~~ — **done.** Went with a contextual hint
+  over relabelling/auto-nudge/decoupling, since it's purely additive (no compositor or
+  state-schema change, so no saved preset's look changes). An amber warning row appears
+  under Key mode exactly when Key is on and Crossfade < 0.02, and clears the moment
+  either condition does. Wired into the live Crossfade slider, the Key-on toggle, and
+  `updateControls()` (covers presets + Reset). README's Compositing bullet updated.
+- ~~**Move Glitch into the Degradation module**~~ — **done.** Row moved, PARAMS
+  reordered to match (keeps the MIDI mapping list aligned with the sliders), README
+  updated. Verified the slider still functions and broadcasts state.
+- ~~**"No sound" as a fixed-label button**~~ — **done.** Label now stays "No sound";
+  the `on` class tint carries the state, matching Camera/Start.
+- ~~**Motion "Enable" on/off is unclear**~~ — **done.** Checkbox replaced with a tinted
+  toggle button ("Motion: on"/"Motion: off"), matching the other audio/camera toggles.
+  Still correctly turns the camera on when enabled.
+- ~~**Add a "Reset" button**~~ — **done.** Lives in the topbar next to Open output
+  window — always reachable without scrolling. Snapshots the initial `state` literal
+  as `DEFAULT_STATE` and reuses `applyState()` for the restore. Confirms first (same
+  pattern as Reset MIDI mappings). Verified: mangled controls return to defaults;
+  tempo/Quality/MIDI/presets untouched; cancelling the confirm leaves state alone.
 
 ## Sync
 - **OSC / Ableton Link bridge** — exact beat/tempo from a standalone Max patch (Link)
