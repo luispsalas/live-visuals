@@ -92,6 +92,7 @@ const ui = {
   grain: el('grain'),
   blend: el('blend'),
   keyOn: el('key-on'),
+  keyMixHint: el('key-mix-hint'),
   keySource: el('key-source'),
   keyMode: el('key-mode'),
   keyCapture: el('key-capture'),
@@ -303,6 +304,13 @@ function sendState() {
   channel.send('state', state);
 }
 
+// Crossfade is the key's master level (the shader multiplies the key mask into
+// uMix), so Key On at Crossfade 0 silently does nothing — surface that instead of
+// letting it read as "the key is broken".
+function syncKeyMixHint() {
+  ui.keyMixHint.classList.toggle('show', state.keyOn && state.mix < 0.02);
+}
+
 // Sync every control in the panel to the current state (after presets / MIDI).
 function updateControls() {
   ui.slotA.value = String(state.slotA);
@@ -320,6 +328,7 @@ function updateControls() {
   syncLoopRows();
   syncMotionRoutes();
   syncKeyMode();
+  syncKeyMixHint();
 }
 
 // Only show the background-plate controls when the difference key is selected.
@@ -707,7 +716,7 @@ setInterval(() => {
 
 ui.slotA.addEventListener('change', () => { state.slotA = parseInt(ui.slotA.value, 10); sendState(); });
 ui.slotB.addEventListener('change', () => { state.slotB = parseInt(ui.slotB.value, 10); sendState(); });
-ui.mix.addEventListener('input', () => { state.mix = parseFloat(ui.mix.value); sendState(); });
+ui.mix.addEventListener('input', () => { state.mix = parseFloat(ui.mix.value); syncKeyMixHint(); sendState(); });
 ui.hue.addEventListener('input', () => { state.hue = parseFloat(ui.hue.value); sendState(); });
 ui.sat.addEventListener('input', () => { state.sat = parseFloat(ui.sat.value); sendState(); });
 ui.feedback.addEventListener('input', () => { state.feedback = parseFloat(ui.feedback.value); sendState(); });
@@ -730,7 +739,7 @@ ui.motionSens.addEventListener('input', () => { state.motionSens = parseFloat(ui
 
 // Compositing / keying.
 ui.blend.addEventListener('change', () => { state.blend = ui.blend.value; sendState(); });
-ui.keyOn.addEventListener('change', () => { state.keyOn = ui.keyOn.checked; sendState(); });
+ui.keyOn.addEventListener('change', () => { state.keyOn = ui.keyOn.checked; syncKeyMixHint(); sendState(); });
 ui.keySource.addEventListener('change', () => {
   state.keySource = ui.keySource.value;
   // The plate belongs to whichever feed it was grabbed from, so switching feeds invalidates it.
