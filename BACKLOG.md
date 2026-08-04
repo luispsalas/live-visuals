@@ -1,6 +1,18 @@
 # Backlog
 
-Rough, unordered — implemented progressively, one small checkpoint per item.
+Rough, grouped by theme; a rough priority read lives at the bottom.
+
+## Bugs
+- **Motion sometimes doesn't perceive an open camera** *(intermittent — needs a real
+  webcam to repro; the sandbox blocks capture).* `updateMotion()` reads
+  `preview.renderer.cameraVideo()`, which only returns the `<video>` once
+  `cameraSource.stream` is set — so the likely cause is timing: the camera is enabled
+  but the stream/track isn't ready when motion first polls, or the video has no decoded
+  frames yet (motion.js resets `prev` whenever `readyState < 2` / `paused`, so it can
+  sit at zero and never accumulate). First diagnostics: log `readyState` / `paused` /
+  `videoWidth` while Motion is on; confirm the element motion reads is the same one the
+  preview opened; consider re-calling `setVideo` on the stream's `loadeddata` event, or
+  retrying until frames arrive. Related to the Motion tweaks item below.
 
 ## Transitions
 - **Preset crossfade** — a short, tempo-aware dissolve between the outgoing and
@@ -60,6 +72,12 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   value or the transient envelope is the better thing to route, only three route slots,
   no way to invert a route (movement *reducing* a parameter), and the meter giving no
   sense of where the motion is happening. Revisit after a real session with a camera.
+- **Motion analysis on a video-file source too** — the frame-differencer only watches
+  the live camera today; point it at the `<video>` of a playing video-file source as
+  well, so movement *within* a clip can drive parameters. Low complexity —
+  `motion.js`'s `setVideo()` already accepts any `<video>`; what's needed is a choice of
+  which feed to analyse (camera vs the video source) and reading the video source's
+  element. Pairs with the Motion tweaks above.
 - **Text input as a visual layer** — review adding live text as a source/overlay
   (titles, lyrics, messages). Decisions to weigh: render approach (canvas-2D texture
   → GPU vs an HTML overlay on the output window), where it sits in the pipeline (its
@@ -67,6 +85,34 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
   everything), font/size/color/position controls, and whether it can be audio-reactive
   or BPM-looped (e.g. pulse, flicker). Slot-based fits the existing compositor cleanly
   and lets you luma-key a camera through the letterforms.
+
+## UI & UX polish
+- **Make Crossfade's master role evident** — the compositor does
+  `amount = uMix; if (key) amount *= mask; out = mix(a, blended, amount)`, so with
+  **Crossfade at 0 the blend *and* the luma key do nothing** (the output is pure Source
+  A). Users hit this as "the key doesn't work." Decide a real fix, not just a label:
+  options are relabelling Crossfade to signal it's the A↔B master, showing a hint when
+  Key is on while Crossfade is 0, auto-nudging mix when the key is enabled, or making
+  the key independent of mix. Pick one deliberately.
+- **Move Glitch into the Degradation module** — it's a destruction/degradation effect
+  currently sitting in Mix & effects; it belongs next to Pixelate / Posterize /
+  Scanlines / Grain. Pure relocation — the uniform already lives in the display pass
+  (`feedbackPass.js`) — and it stays a normal PARAM, so MIDI and motion routing are
+  unaffected. Just move the slider's row and keep the state key.
+- **"No sound" as a fixed-label button** — now that the active state is shown by the
+  accent tint, the label no longer needs to flip to "No sound: on". Keep the text
+  constant and let the tint carry the state (Camera/Start already work this way once
+  the label is dropped). Small consistency fix.
+- **Motion "Enable" on/off is unclear** — it's a bare checkbox while the audio modes
+  use tinted toggle buttons, so the affordance is inconsistent and the on-state is easy
+  to miss mid-performance. Make it read clearly: a tinted toggle button matching No
+  sound / Camera, or at least a distinct on/off label. Consistency with the buttons
+  above.
+- **Add a "Reset" button (return to initial values)** — one click to put all the
+  look/effect controls back to defaults, with a confirm like the MIDI reset. Scope it
+  to the `state` params + their sliders; leave tempo, Quality, MIDI bindings and saved
+  presets untouched (match what presets already treat as global/out-of-scope). Handy as
+  a clean-slate or panic during a set.
 
 ## Sync
 - **OSC / Ableton Link bridge** — exact beat/tempo from a standalone Max patch (Link)
@@ -119,6 +165,16 @@ Rough, unordered — implemented progressively, one small checkpoint per item.
    all?" sentence in the intro. Then review the whole flow — heading order, sentence
    length, how early the reader reaches something that works — with the same
    per-platform principle as the guide.
+
+- **Clarify how Quality / output resolution actually works** (fold into the README
+  rework, #2). The current line — *"the Quality slider scales the internal render
+  resolution (100% = full)"* — is too terse to be understood. Explain plainly: the
+  output **always fills the display at its native resolution**; Quality changes how many
+  pixels are actually *shaded internally* before being scaled up to that display, so 50%
+  renders at half-resolution and upscales — trading sharpness for GPU headroom. It is
+  **not** the window/projector resolution and doesn't change it. Worth stating the
+  concrete relationship (internal buffer ≈ display size × devicePixelRatio × Quality)
+  for the curious, in plain words for everyone else.
 
 3. **Spanish version, once 1 and 2 have settled.** A full Spanish document with all the
    user-facing information (not a cut-down FAQ), linked prominently from the README.
