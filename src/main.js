@@ -309,7 +309,8 @@ function updateControls() {
   ui.keyMode.value = state.keyMode;
   ui.keyInvert.checked = state.keyInvert;
   for (const [name, p] of Object.entries(PARAMS)) p.el.value = String(state[name]);
-  ui.motionOn.checked = state.motionOn;
+  ui.motionOn.textContent = state.motionOn ? 'Motion: on' : 'Motion: off';
+  ui.motionOn.classList.toggle('on', state.motionOn);
   ui.motionSens.value = String(state.motionSens);
   syncLoopRows();
   syncMotionRoutes();
@@ -709,8 +710,10 @@ ui.grain.addEventListener('input', () => { state.grain = parseFloat(ui.grain.val
 ui.reactivityMode.addEventListener('change', () => { state.reactivity = ui.reactivityMode.value; });
 
 // Motion: enabling it turns the camera on too, since it has nothing to watch otherwise.
-ui.motionOn.addEventListener('change', () => {
-  state.motionOn = ui.motionOn.checked;
+ui.motionOn.addEventListener('click', () => {
+  state.motionOn = !state.motionOn;
+  ui.motionOn.textContent = state.motionOn ? 'Motion: on' : 'Motion: off';
+  ui.motionOn.classList.toggle('on', state.motionOn);
   if (state.motionOn && !cameraOn) enableCamera(true);
 });
 ui.motionSens.addEventListener('input', () => { state.motionSens = parseFloat(ui.motionSens.value); });
