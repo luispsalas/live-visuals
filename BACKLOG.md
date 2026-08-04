@@ -129,9 +129,9 @@ Rough, grouped by theme.
 - ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
   "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
   audio). Workflow documented in README → "Recording a demo".
-- **Illustrative reference images** — the most-felt gap before going public: this is a
-  *visual* tool whose front page shows no visuals, so a reader cannot tell what it
-  does. Cheaper and more flexible than the GIF below, and worth doing first:
+- **Illustrative reference images** — *in progress.* The most-felt gap before going
+  public: this is a *visual* tool whose front page shows no visuals, so a reader cannot
+  tell what it does. Cheaper and more flexible than the GIF below, and worth doing first:
   - a **hero still** at the top of the README — one strong frame that says what this is;
   - a **UI screenshot** of the control panel in design mode, so the guide can point at
     real controls instead of describing them;
@@ -142,6 +142,31 @@ Rough, grouped by theme.
   Decide where they live (an `assets/` or `docs/` folder in-repo is simplest and keeps
   the Markdown portable) and keep them modest in size. Static images have none of the
   GIF's weight problem and render everywhere, including outside github.com.
+  - **Status (2026-08-04):** a first batch of 9 screenshots existed in
+    `~/Desktop/Video Performance Still/Repo Stills/`, using open-source stock video as
+    Source material (thermal/keying/glitch treatments over crowd and street footage).
+    **Checked their rights via the Archive.org metadata API — none of the three source
+    items (`OABreathing`, `oa1stcameratestnbc`, `discoveringthemusicofafrica_202605`)
+    carry an explicit license** (`licenseurl`/`rights` both empty). The two A/V Geeks
+    ones explicitly invite contacting them (footage@avgeeks.com) before project use;
+    the third (an educational film series upload) has no rights signal at all. None of
+    that batch should ship without either that permission or a rights-confirmed
+    replacement — **do not use the original 9 stills as-is.**
+  - **Resolved with a sourcing list, not by clearing the original clips.** Identified
+    genuinely public-domain replacement footage instead, verified the same way (API
+    `licenseurl` check, not just page appearance or collection reputation): Prelinger
+    Archives titles *A Trip Down Market Street* (1906, CC0), *Coney Island* (1940, PD),
+    *The City* (1939, PD), *How a Watch Works* (1949, PD), *Lucky Strike: Square Dance*
+    (1948, PD); NASA titles *8k_Earth_FullMoon_set* (CC0), *Apollo 16mm Onboard Select
+    Views* (PD), *Expedition 66 U.S. Spacewalk* (CC0). Exact archive.org URLs and a
+    suggested citation format are in the conversation that produced this list — pull
+    them back out via `WebFetch`/`archive.org/metadata/<id>` if needed rather than
+    re-deriving. **User is capturing new stills from this material next.**
+  - Once the new stills exist: build the hero + gallery + blend-mode-thumbnail set from
+    them, add a **Credits / Footage sources** note in the README citing each clip
+    (title, year, archive.org URL, license), and only then remove the original
+    unresolved-rights batch from the Desktop folder (don't delete before the new set
+    is confirmed good).
 - **Sample GIF / clip as a README illustration** — the motion counterpart to the stills
   above; do it after them, since a still already fixes the "cannot see what it does"
   problem at a fraction of the effort. review options for showing the tool
