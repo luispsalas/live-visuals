@@ -52,6 +52,10 @@ const state = {
   ],
 };
 
+// Snapshot of the look/effect defaults, for the Reset button. Captured here, before
+// anything mutates `state`, and deep-cloned on use (applyState already does that).
+const DEFAULT_STATE = JSON.parse(JSON.stringify(state));
+
 // Tempo for the loops — kept out of `state` so recalling a preset mid-song doesn't
 // change the BPM. Pre-filled from the auto-estimate until the user sets it.
 let tempo = 120;
@@ -71,6 +75,7 @@ const ui = {
   refresh: el('refresh'),
   start: el('start'),
   openOutput: el('open-output'),
+  resetAll: el('reset-all'),
   modeNote: el('mode-note'),
   previewCanvas: el('preview-canvas'),
   slotA: el('slot-a'),
@@ -680,6 +685,11 @@ function setPerformMode(on) {
     ? 'Perform mode — output window is live; corner preview mirrors it at low power. Close the output window to return.'
     : 'Design mode — visuals render in the preview.';
 }
+
+ui.resetAll.addEventListener('click', () => {
+  if (!confirm('Reset all look/effect controls to their defaults?\n\nThis clears crossfade, colour, feedback, degradation, compositing, motion routes and BPM loops. Tempo, Quality, MIDI mappings and saved presets are not affected. This cannot be undone.')) return;
+  applyState(DEFAULT_STATE);
+});
 
 ui.openOutput.addEventListener('click', () => {
   // Relative, not '/output.html', so it also resolves when the app is hosted under
