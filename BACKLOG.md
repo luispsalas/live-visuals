@@ -184,38 +184,36 @@ Rough, grouped by theme.
   read). Also decide where the file lives (an `assets/` folder in-repo vs an external
   host) and whether to show several short looks or one representative one. Ties into
   the starter-presets item — a GIF of a preset is a good showcase for both.
-### Documentation rework (do these in order)
+### Documentation rework
 
-1. **USER-GUIDE — one clear track per operating system.** Right now Mac and Windows
-   instructions are interleaved inside shared sections, so a reader has to constantly
-   work out which lines apply to them. It reads as complex at exactly the moment they
-   are trying to *start*. Restructure so a user picks their system once and then
-   follows an uninterrupted sequence — accept the duplication between the two tracks;
-   for end-user docs, clarity beats not repeating yourself. Also **delete the subtitle
-   line** "Plain-language guide for non-technical users. No technical background
-   assumed." — it states the obvious and slightly patronises.
+1. ~~**USER-GUIDE — one clear track per operating system**~~ — **done (2026-08-04).**
+   Section 3 ("Making it react to your music") split into two fully self-contained
+   tracks, `### If you're on a Mac` / `### If you're on Windows`, each covering its
+   fast/no-install path and its fallback top-to-bottom with no need to read the other
+   platform's text. Subtitle line deleted. Also added a new **Motion** section (§6 —
+   the feature had no guide coverage at all) and a **Reset** mention in Everyday use
+   (§7) — both real content gaps found during the pass, not just structural changes.
+   Renumbered §4–8 → §4–9 accordingly; the README's anchor link to §2 is unaffected
+   (that section didn't move).
 
-2. **README — same treatment, simpler language.** Write for someone who just wants to
-   follow a few steps for *their* system and start. Specifically: **delete** the line
-   "Early and evolving; built to grow progressively." and **delete** the "No DAW at
-   all?" sentence in the intro. Then review the whole flow — heading order, sentence
-   length, how early the reader reaches something that works — with the same
-   per-platform principle as the guide.
+2. ~~**README — same treatment, simpler language**~~ — **done (2026-08-04).** Both
+   named lines deleted ("Early and evolving…" and "No DAW at all?"). Controls section
+   gained **System audio** and **Reset** (previously undocumented anywhere in either
+   file), Privacy & security's permissions bullet updated to mention screen-share
+   (previously only listed mic + camera, predating System audio). The audio-routing
+   section keeps its existing compact Option A/B + table format rather than a full
+   per-OS split — right call for a "quick reference, link to the Guide for detail"
+   document; a full split here would just duplicate the Guide at the cost of brevity.
 
-- **Clarify how Quality / output resolution actually works** (fold into the README
-  rework, #2). The current line — *"the Quality slider scales the internal render
-  resolution (100% = full)"* — is too terse to be understood. Explain plainly: the
-  output **always fills the display at its native resolution**; Quality changes how many
-  pixels are actually *shaded internally* before being scaled up to that display, so 50%
-  renders at half-resolution and upscales — trading sharpness for GPU headroom. It is
-  **not** the window/projector resolution and doesn't change it. Worth stating the
-  concrete relationship (internal buffer ≈ display size × devicePixelRatio × Quality)
-  for the curious, in plain words for everyone else.
+- ~~**Clarify how Quality / output resolution actually works**~~ — **done**, folded
+  into the README rework. Now states plainly in three places (README Performance
+  section, README Controls, in-app How-to-run panel) that the output window always
+  fills the display at native resolution and Quality only changes how many pixels are
+  shaded internally before the scale-up.
 
-3. **Spanish version, once 1 and 2 have settled.** A full Spanish document with all the
-   user-facing information (not a cut-down FAQ), linked prominently from the README.
-   Deliberately sequenced last so the English wording is stable first and the two
-   don't drift immediately. Decisions to make: file layout (`README.es.md` +
+3. **Spanish version, once 1 and 2 have settled.** They have — this is next. A full
+   Spanish document with all the user-facing information (not a cut-down FAQ), linked
+   prominently from the README. Decisions to make: file layout (`README.es.md` +
    `USER-GUIDE.es.md` alongside the English, with a language link pair at the top of
    each, is the common GitHub convention) versus a `/docs` folder or the Wiki; and how
    to keep the versions in sync as the app changes. Worth a quick look at how other

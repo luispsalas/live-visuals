@@ -3,12 +3,9 @@
 A lightweight, browser-based **audio-reactive visual engine** for live performance.
 Run it alongside any DAW: it listens to your audio and projects generative visuals
 full-screen on a second display, driven live from the keyboard or any MIDI controller.
-No DAW at all? **No sound** mode runs the whole engine without an audio input.
 
 Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control panel**
 (keep on the laptop, beside your DAW) and a clean **output window** (send to the projector).
-
-> Early and evolving; built to grow progressively.
 
 ## Start here
 
@@ -78,7 +75,7 @@ that can be dropped on any web host — there is no server component.
 
 ## Controls
 
-- **Audio** — choose the input (BlackHole), **Start**, then watch the bass/mid/treble/RMS meters and detected tempo. **No sound** is the alternative to Start: it runs the engine with no audio input at all, so generative sources, BPM loops and Motion keep animating. Use it to design looks away from the DAW, test the projector, or perform purely on tempo and movement. Pressing **Start** hands back to real audio.
+- **Audio** — choose the input (BlackHole), **Start**, then watch the bass/mid/treble/RMS meters and detected tempo. **System audio** is the no-install alternative: Chrome hands over your computer's sound via its screen-share dialog (video discarded). **No sound** runs the engine with no audio input at all, so generative sources, BPM loops and Motion keep animating — good for designing looks away from the DAW, testing the projector, or performing purely on tempo and movement. Whichever you pick, the button stays lit while it's active, and **Start** always hands back to real audio.
 - **Mix & effects** — two visual **sources** (A/B) with a **crossfade**; **hue/sat** colour; **feedback** trails, **RGB shift**; a **Reactivity** mode (Punchy → Smooth → Mellow → Ambient → None) setting how strongly transients drive motion; plus **camera** and **video-file** inputs (the **Camera** dropdown picks which device — built-in, external, or a virtual cam like OBS; ⟳ rescans).
 - **Degradation** — a final "make it look worse, on purpose" pass: **Glitch** (block jitter), **Pixelate** (blocks/mosaic), **Posterize** (banded colour), **Scanlines** (CRT), **Grain** (film noise). Like every parameter, each is MIDI-mappable and can be driven by Motion.
 - **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **key** that reveals one feed through another. Two key modes: **Luma** (matte from brightness — or from the feedback buffer) and **Difference** (press **Capture BG** on an empty shot, and afterwards only what *changed* — you walking in — lets the other feed through; no green screen needed). **Crossfade is the master level for both the blend and the key** — at 0 neither has anything to show; the panel warns you when Key is on with Crossfade still at 0.
@@ -86,7 +83,8 @@ that can be dropped on any web host — there is no server component.
 - **BPM loops** — tempo-synced motion as counterpoint to the audio reactivity: set the **BPM** (or Tap), then loop Hue / Sat / Crossfade / Feedback / Key over ¼-beat–8-bar cycles, with ramp / sine / triangle / square shapes.
 - **My presets** — save and recall full looks (stored in the browser; number keys **1–8** fire the first eight; each is MIDI-mappable).
 - **MIDI** — Connect, then **Learn** any parameter or preset onto a control. Works with any controller: pads or keyboard keys (Note On) trigger presets; knobs, faders, or the mod wheel (CC) drive parameters. Multiple devices at once are fine.
-- **Output** — the top-bar button opens the projector window (**perform mode**: the panel slims down to share the screen with your DAW, and a low-power mini preview stays in the corner as a confidence monitor; close the output window to return to **design mode**, with the full-size preview). **Quality** (render scale) buys GPU headroom.
+- **Output** — the top-bar button opens the projector window (**perform mode**: the panel slims down to share the screen with your DAW, and a low-power mini preview stays in the corner as a confidence monitor; close the output window to return to **design mode**, with the full-size preview). **Quality** (render scale) buys GPU headroom — see Performance below for what it actually changes.
+- **Reset** — top bar, next to Open output window. Puts every look/effect control back to its default in one click (with a confirmation first). Leaves tempo, Quality, MIDI mappings, and saved presets untouched — a clean slate or panic button during a set.
 
 **Generative sources:** Plasma, Flow field, Kaleidoscope, Tunnel, Metaballs, Voronoi, Julia, Interference — plus four **keying mattes** (Ink blobs, Strobe bars, Iris, Pulse rings: high-contrast white-on-black shapes made for luma-keying the camera or a video through them) — plus live Camera and Video file.
 
@@ -114,10 +112,13 @@ that can be dropped on any web host — there is no server component.
 The app runs entirely on the GPU and is built to hold a steady frame rate for hours.
 If it stutters, work down this list — the first two fix almost everything.
 
-1. **Lower Quality** (Output module). This is the big one: it renders internally at a
-   fraction of the resolution and scales up, so the GPU shades far fewer pixels. Try
-   **60–75%** on a 1080p projector, **40–50%** on 4K. The image softens slightly;
-   the motion gets much smoother.
+1. **Lower Quality** (Output module). This is the big one. **The output window always
+   fills your display at its native resolution — Quality never changes that.** What it
+   changes is how many pixels get shaded *before* that scale-up: at 100% every output
+   pixel is computed; at 50% the GPU shades a quarter as many internally, then scales
+   the result up to fill the screen. Fewer pixels shaded = fewer for the GPU to push
+   every frame. Try **60–75%** on a 1080p projector, **40–50%** on 4K. The image
+   softens slightly; the motion gets much smoother.
 2. **Plug the laptop in.** On battery, macOS and Windows both throttle the GPU hard —
    often the single biggest cause of stutter, and the easiest to miss.
 3. **Close other GPU-hungry apps** — other browser tabs (especially video), video calls,
@@ -167,9 +168,10 @@ account, no analytics, and no network calls of any kind — audio, camera and vi
 processed locally on your GPU and discarded. Saved presets and MIDI mappings live in
 your own browser's storage.
 
-- **Permissions:** Chrome will ask for microphone access (that is how it reads the
-  virtual audio cable) and, if you use the camera or Motion, camera access. Both are
-  revocable any time via the padlock icon in the address bar.
+- **Permissions:** Chrome will ask for microphone access (that is how it reads a
+  virtual audio cable), screen-share access if you use **System audio** (the video is
+  discarded immediately — only the audio track is kept), and camera access if you use
+  the camera or Motion. All are revocable any time via the icon in the address bar.
 - **MIDI** is requested without SysEx, so the app can read your controller but cannot
   reprogram it.
 - **Dependencies:** the shipped app depends only on Three.js. `npm audit` reports zero

@@ -1,7 +1,5 @@
 # Live Audio-Reactive Visuals — User Guide
 
-> Plain-language guide for non-technical users. No technical background assumed.
-
 This app listens to your music and paints moving visuals in time with it, which you
 send to a projector or second screen. You drive it live from your keyboard or a MIDI
 controller.
@@ -49,29 +47,22 @@ asked at all.
 ## 3. Making it react to your music
 
 The app cannot hear your computer's sound by itself — browsers aren't allowed to
-listen to whatever is playing. There are two ways to solve that.
+listen to whatever is playing. **Pick your system below and follow that one track —
+you don't need to read the other.**
 
-### Option A — "System audio" (no installing; best on Windows)
+### If you're on a Mac
 
-Click **System audio** in the Audio panel. Chrome opens its share dialog:
+**Music playing in a Chrome tab** (YouTube, Spotify web, SoundCloud)? Use the fast,
+nothing-to-install option:
 
-- **Windows:** choose **Entire Screen**, tick **"Also share system audio"** at the
-  bottom, and click Share. The app now hears everything your computer plays,
-  including your music software.
-- **Mac:** Chrome can only share the audio of a **browser tab**, not the whole
-  system. So this works if your music is playing in a Chrome tab (YouTube, Spotify
-  web, SoundCloud) — pick the **Chrome Tab** option and tick *Share tab audio*. For a
-  DAW on a Mac, use Option B instead.
+1. Click **System audio** in the Audio panel.
+2. In Chrome's share dialog, pick the **Chrome Tab** option, choose the tab your
+   music is playing in, and tick **"Share tab audio."**
+3. Chrome shows a "sharing" bar while this is active — that's expected, ignore it.
 
-The app throws the video away and keeps only the sound. Chrome will show a
-"sharing your screen" bar — that is expected, and you can ignore it.
-
-### Option B — a virtual audio cable (needed for a DAW on Mac)
-
-A small free tool that pipes sound from your music software into the app. Set it up
-once.
-
-#### On a Mac
+**Running a DAW** (Ableton, Logic, etc.)? Chrome on a Mac can only share a browser
+tab's audio, not your whole system, so you'll need a small free tool that routes
+sound to the app instead:
 
 1. Download and install **[BlackHole 2ch](https://existential.audio/blackhole/)**
    (free; you give an email address and they send the download link).
@@ -80,30 +71,40 @@ once.
 4. In the list, tick **both** *BlackHole 2ch* **and** your normal speakers or
    interface. Ticking both is what lets you still *hear* the music while the app
    listens to it.
-5. In your music software, set the audio **output** to that new Multi-Output Device.
+5. In your DAW, set the audio **output** to that new Multi-Output Device.
 6. Back in the app: click **Refresh**, choose **BlackHole**, click **Start**. Play
    something — the coloured meters should move.
 
 *Note: with a Multi-Output Device selected, the Mac's volume keys stop working. Use
-your music software's volume or your speaker's own knob instead.*
+your DAW's volume or your speaker's own knob instead.*
 
-#### On a Windows PC (only if you skipped Option A)
+### If you're on Windows
+
+This is the easier platform — **System audio** captures your whole computer, DAW
+included, with nothing to install:
+
+1. Click **System audio** in the Audio panel.
+2. In Chrome's share dialog, choose **Entire Screen**.
+3. Tick **"Also share system audio"** at the bottom, then click **Share**.
+4. The app now hears everything your computer plays, including your DAW. Chrome
+   shows a "sharing" bar while this is active — that's expected, ignore it.
+
+If you'd rather have a permanent virtual audio cable instead (no dialog each time):
 
 1. Download and install **[VB-CABLE](https://vb-audio.com/Cable/)** (free; run the
    installer as Administrator, then restart).
-2. In your music software, set the audio **output** to **CABLE Input**.
+2. In your DAW, set the audio **output** to **CABLE Input**.
 3. To keep hearing the music: open Windows **Sound settings** → *More sound settings*
    → **Recording** tab → right-click **CABLE Output** → *Properties* → **Listen** tab
    → tick *Listen to this device* and choose your speakers.
 4. In the app: click **Refresh**, choose **CABLE Output**, click **Start**.
 
-*If that feels fiddly, [VoiceMeeter](https://vb-audio.com/Voicemeeter/) (also free)
-does the same job with a proper mixer window, at the cost of a longer setup.*
+*If VB-CABLE feels fiddly, [VoiceMeeter](https://vb-audio.com/Voicemeeter/) (also
+free) does the same job with a proper mixer window, at the cost of a longer setup.*
 
 > **Honest status:** the Mac/BlackHole path is tested and used regularly. The Windows
-> instructions follow the standard setups but have not been verified first-hand yet.
-> If something doesn't match, **No sound** mode works on any machine, and **System
-> audio** needs nothing installed.
+> instructions follow standard setups but have not been verified first-hand yet. If
+> something doesn't match what you see, **No sound** mode still works on any machine.
 
 ---
 
@@ -115,7 +116,7 @@ switches you into Performance, closing it returns you to Design.
 | | **Design view** (default) | **Performance view** |
 |---|---|---|
 | **When** | Building and tweaking looks | Playing live to an audience |
-| **Layout** | Big preview on the left, all controls on the right | Controls slim into a narrow strip so they sit next to your music software; a small preview tucks into the corner as a monitor |
+| **Layout** | Big preview on the left, all controls on the right | Controls slim into a narrow strip so they sit next to your DAW; a small preview tucks into the corner as a monitor |
 | **Where the visuals show** | In the preview inside the window | Full-screen on your projector / second screen |
 | **How to get there** | Just open the app | Click **Open output window →** (top right), drag that window to your projector, press **f** for full screen |
 
@@ -144,12 +145,36 @@ the *math* of how they mix. Plain-language cheat sheet:
 bright shapes — e.g. a camera through moving blobs), keep **Blend on Mix**. The
 brightening modes (Screen/Add) fight the key and wash everything to white.
 
+**Also worth knowing:** **Crossfade doubles as the master level for the key too.**
+With Crossfade at 0, neither the blend nor the key has anything to show — the panel
+will warn you with a small note if you turn Key on while Crossfade is still at 0.
+
 *(Before/after thumbnails for each blend mode are planned — they'd explain this
 faster than the words do.)*
 
 ---
 
-## 6. Everyday use (quick version)
+## 6. Motion — letting movement drive the visuals
+
+Alongside the music, the app can watch something *move* and turn that movement into
+its own control signal — a second, independent way to shape the visuals.
+
+1. In the **Motion** module, use **Watch** to pick what it looks at: your **Camera**,
+   or a loaded **Video file** (if you choose Video file, movement *within* the clip
+   drives things — not your own movement).
+2. Click **Enable**. If you picked Camera, this turns the camera on for you.
+3. Watch the **Motion** meter respond as things move in frame. Adjust **Sensitivity**
+   if it feels too twitchy or too flat for your lighting/room.
+4. Below that, tick a row to **route** motion onto a parameter (Crossfade, Feedback,
+   Glitch) with a depth slider — motion now nudges that control on top of wherever
+   its own slider sits.
+
+A good first thing to try: route Motion onto **Crossfade**. Standing still holds
+Source A; moving pushes toward Source B.
+
+---
+
+## 7. Everyday use (quick version)
 
 1. Start your music; the audio meters in the app should move. (No music? Click
    **No sound** and everything still animates.)
@@ -163,17 +188,22 @@ faster than the words do.)*
 6. When you're ready to play out, **open the output window**, send it to the
    projector, and go full screen.
 
+**Want to start over?** Click **Reset** (top right, next to Open output window) to
+put every look/effect control back to its default. It asks you to confirm first, and
+it leaves your tempo, Quality setting, MIDI mappings, and saved presets untouched.
+
 > **Starter presets** are on the to-do list. For now the preset list starts empty —
 > build a look you like and save it, and it will still be there next time.
 
 ---
 
-## 7. If it stutters
+## 8. If it stutters
 
 Work down this list; the first two fix almost everything.
 
 1. **Lower the Quality slider** (Output module) to 60–75%, or 40–50% on a 4K
-   projector. The picture softens a little and the motion gets much smoother.
+   projector. It renders internally at a smaller size and scales up to fill your
+   screen — the picture softens a little, but the motion gets much smoother.
 2. **Plug the laptop in.** On battery, both Mac and Windows slow the graphics chip
    down dramatically. This is the most commonly missed cause.
 3. **Close other browser tabs and apps** — especially anything playing video, and
@@ -183,7 +213,7 @@ Work down this list; the first two fix almost everything.
 
 ---
 
-## 8. Running from a folder
+## 9. Running from a folder
 
 Only needed if you were given the project files rather than a web link. You will need
 **[Node.js](https://nodejs.org)** (choose the big **LTS** button and click through the
