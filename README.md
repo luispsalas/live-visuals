@@ -5,7 +5,7 @@ Run it alongside any DAW: it listens to your audio and projects generative visua
 full-screen on a second display, driven live by a MIDI controller or the keyboard.
 
 **Español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
-para actuaciones en vivo y grabación experimental. Se puede usar con cualquier salida de audio (DAWs, micrófono, entrada directa) y proyecta
+para actuaciones en vivo y grabación experimental. Se puede usar con cualquier salida de audio (DAWs, música, micrófono, entrada directa) y proyecta
 visuales generativos a pantalla completa en una segunda pantalla. Compatible con controladores MIDI.
 *→ [Guía del usuario en español](USER-GUIDE.es.md) (próximamente).*
 
