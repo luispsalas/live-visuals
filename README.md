@@ -2,12 +2,13 @@
 
 A lightweight, browser-based **audio-reactive visual engine** for live performance.
 Run it alongside any DAW: it listens to your audio and projects generative visuals
-full-screen on a second display. Perform it live with a MIDI controller — ride a
-fader to sweep Crossfade through a breakdown, trigger a pad to strobe Glitch on a
-drop — or just snap between up to 8 saved looks with the number keys.
+full-screen on a second display, driven live by a MIDI controller or the keyboard.
 
-Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control panel**
-(keep on the laptop, beside your DAW) and a clean **output window** (send to the projector).
+**En español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
+para actuaciones en vivo. Úsalo junto a cualquier DAW: escucha tu audio y proyecta
+visuales generativos a pantalla completa en una segunda pantalla, controlados en vivo
+con un controlador MIDI o el teclado.
+*→ [Guía del usuario en español](USER-GUIDE.es.md) (próximamente).*
 
 ![Four frames from the output window: a swimmer keyed into magenta, an abstract generative bloom, a guitarist through feedback trails, and archival street footage with an inverted-edge look](docs/images/grid-sources.jpg)
 
@@ -113,6 +114,7 @@ that can be dropped on any web host — there is no server component.
 - **Ambient** reactivity + a 4-bar **Hue** loop → slow, hypnotic colour drift for chill sets.
 - **Retro decay:** **Posterize** ~0.7 + **Scanlines** ~0.5 + a little **Grain** turns any source into degraded broadcast footage. Add **Pixelate** on top for early-video-game blocks.
 - **Play the visuals with your body:** route **Motion → Crossfade** at full depth — standing still holds Source A, moving pushes toward Source B. Add **Motion → Feedback** so gestures leave trails. Three rhythms at once (transients, tempo, movement) is the point.
+- **Ride the mix like a fader on your DAW:** map a MIDI fader to **Crossfade** and sweep it through a breakdown, or a pad to **Glitch** for a one-hit strobe on the drop. No MIDI gear at hand? The number keys **1–8** snap between up to 8 saved looks instead.
 
 ## Performance
 
@@ -164,9 +166,11 @@ Tip: keep the output window at a decent size — OBS scales the capture to fit t
 
 ## Tech
 
-Vite + Three.js. The control window analyses audio and streams state to the output
-window over a `BroadcastChannel`; the output window owns the WebGL renderer. Audio
-analysis runs on a Web Audio clock so reactivity survives fullscreen.
+Vite + Three.js (WebGL) + Web Audio + Web MIDI. Two windows: a **control panel** (keep
+on the laptop, beside your DAW) analyses audio and streams state to a clean **output
+window** (send to the projector) over a `BroadcastChannel`; the output window owns the
+WebGL renderer. Audio analysis runs on a Web Audio clock so reactivity survives
+fullscreen.
 
 ## Privacy & security
 
