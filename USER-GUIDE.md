@@ -1,8 +1,10 @@
 # Live Audio-Reactive Visuals — User Guide
 
 This app listens to your music and paints moving visuals in time with it, which you
-send to a projector or second screen. You drive it live from your keyboard or a MIDI
-controller.
+send to a projector or second screen. You perform it live from a MIDI controller —
+riding a fader or knob to sweep an effect, hitting a pad to fire a saved look — or,
+with no MIDI gear at hand, by snapping between up to 8 saved looks with the number
+keys on your keyboard.
 
 ---
 
@@ -11,15 +13,17 @@ controller.
 **All you need is [Google Chrome](https://www.google.com/chrome/).** The app runs
 inside the browser — there is nothing to install and no account to create.
 
-Open the app's link in Chrome, then click the **No sound** button next to *Start*.
+**Open the app here: [https://luispsalas.github.io/live-visuals/](https://luispsalas.github.io/live-visuals/)**
+
+Open that link in Chrome, then click the **No sound** button next to *Start*.
 Visuals begin moving straight away. Change **Source A** and **Source B**, drag a few
 sliders, and you have already used most of it.
 
 That is genuinely all that is required to explore. Everything below is optional and
 only needed for specific things.
 
-> **If you were given a folder instead of a link**, see *Running from a folder* at
-> the end of this guide.
+> **If you were given a folder of files instead** — no link, just files on your
+> computer — see *Running from a folder* at the end of this guide.
 
 ---
 

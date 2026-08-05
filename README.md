@@ -2,10 +2,14 @@
 
 A lightweight, browser-based **audio-reactive visual engine** for live performance.
 Run it alongside any DAW: it listens to your audio and projects generative visuals
-full-screen on a second display, driven live from the keyboard or any MIDI controller.
+full-screen on a second display. Perform it live with a MIDI controller — ride a
+fader to sweep Crossfade through a breakdown, trigger a pad to strobe Glitch on a
+drop — or just snap between up to 8 saved looks with the number keys.
 
 Built with Three.js (WebGL) + Web Audio + Web MIDI. Two windows — a **control panel**
 (keep on the laptop, beside your DAW) and a clean **output window** (send to the projector).
+
+![Four frames from the output window: a swimmer keyed into magenta, an abstract generative bloom, a guitarist through feedback trails, and archival street footage with an inverted-edge look](docs/images/grid-sources.jpg)
 
 ## Start here
 
@@ -17,7 +21,8 @@ assumed.
 
 You need **Google Chrome**. That's it to look around:
 
-1. Open the app in Chrome.
+1. **[Open the app](https://luispsalas.github.io/live-visuals/)** in Chrome —
+   `https://luispsalas.github.io/live-visuals/`
 2. Click **No sound** (next to Start). Visuals start moving immediately.
 3. Pick different **Source A** / **Source B** and drag the sliders.
 
@@ -87,6 +92,8 @@ that can be dropped on any web host — there is no server component.
 - **Reset** — top bar, next to Open output window. Puts every look/effect control back to its default in one click (with a confirmation first). Leaves tempo, Quality, MIDI mappings, and saved presets untouched — a clean slate or panic button during a set.
 
 **Generative sources:** Plasma, Flow field, Kaleidoscope, Tunnel, Metaballs, Voronoi, Julia, Interference — plus four **keying mattes** (Ink blobs, Strobe bars, Iris, Pulse rings: high-contrast white-on-black shapes made for luma-keying the camera or a video through them) — plus live Camera and Video file.
+
+![Four more frames, leaning on the degradation effects: feedback smear over a rock face, a heavily grained monochrome shot with RGB shift, athletics footage torn by glitch and scanlines, and an aerial landscape split into colour fringes](docs/images/grid-degradation.jpg)
 
 ## Recommendations
 
@@ -176,6 +183,23 @@ your own browser's storage.
   reprogram it.
 - **Dependencies:** the shipped app depends only on Three.js. `npm audit` reports zero
   vulnerabilities.
+
+## Credits
+
+The stills above are frames from the app's output, processing footage from the
+Wikimedia Commons/Internet Archive:
+
+- *A Trip Down Market Street* (1906), Miles Brothers — public domain
+- *Boxing* (1892), William K. L. Dickson — public domain
+- *Trail running in Spain*, Mad Jack — [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)
+- *Athletics Men's 200m Final*, 27th Summer Universiade 2013, FISUTV — [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)
+- *WikiOrchestra — Karliku (Silesian folk song)*, WikiOrchestra — [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)
+- *Drone video of a wind turbine near Kunda, Estonia*, Sillerkiil — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+- *Butterfly stroke, from underwater*, It is a wonderful world — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+- *Bagurumba, Assam's butterfly dance in motion*, JyotiPN — [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+
+None of the source footage is redistributed here — only visuals derived from it while
+run through the app's effects.
 
 ## Licence
 

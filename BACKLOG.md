@@ -2,11 +2,13 @@
 
 Rough, grouped by theme.
 
-> **▶ Next session:** nothing blocking. The UX cluster (Crossfade-as-master clarity,
-> Glitch → Degradation, fixed "No sound" label, clearer Motion enable, Reset button)
-> is **done** — see *UI & UX polish* below. The motion camera bug (under Bugs) did
-> not reproduce in a 2026-08-04 real-webcam session — see that entry for what that
-> does and doesn't prove before treating it as fixed.
+> **▶ Next session:** nothing blocking. Documentation rework (per-OS guide split,
+> README cleanup) and illustrative reference images (two grids + Credits section) are
+> both **done** — see *Demo & documentation* below. Next up per the user's stated plan:
+> the **Spanish version** (item 3 in that section), once they've finished reviewing the
+> current English docs. The motion camera bug (under Bugs) did not reproduce in a
+> 2026-08-04 real-webcam session — see that entry for what that does and doesn't prove
+> before treating it as fixed.
 
 ## Bugs
 - **Motion sometimes doesn't perceive an open camera** *(intermittent — status:
@@ -133,57 +135,33 @@ Rough, grouped by theme.
 - ~~**Demo recording**~~ — **done (OBS).** "Live Visuals Demo" scene collection +
   "Live Visuals" profile configured locally (1080p60, hardware H.264, MP4 + BlackHole
   audio). Workflow documented in README → "Recording a demo".
-- **Illustrative reference images** — *in progress.* The most-felt gap before going
-  public: this is a *visual* tool whose front page shows no visuals, so a reader cannot
-  tell what it does. Cheaper and more flexible than the GIF below, and worth doing first:
-  - a **hero still** at the top of the README — one strong frame that says what this is;
-  - a **UI screenshot** of the control panel in design mode, so the guide can point at
-    real controls instead of describing them;
-  - a small **gallery of example looks** (a few generative sources, a camera key, a
-    degraded/retro look) to show range;
-  - reuse the same stills as **blend-mode thumbnails** (see the item further down) so
-    one capture session covers everything.
-  Decide where they live (an `assets/` or `docs/` folder in-repo is simplest and keeps
-  the Markdown portable) and keep them modest in size. Static images have none of the
-  GIF's weight problem and render everywhere, including outside github.com.
-  - **Status (2026-08-04):** a first batch of 9 screenshots existed in
-    `~/Desktop/Video Performance Still/Repo Stills/`, using open-source stock video as
-    Source material (thermal/keying/glitch treatments over crowd and street footage).
-    **Checked their rights via the Archive.org metadata API — none of the three source
-    items (`OABreathing`, `oa1stcameratestnbc`, `discoveringthemusicofafrica_202605`)
-    carry an explicit license** (`licenseurl`/`rights` both empty). The two A/V Geeks
-    ones explicitly invite contacting them (footage@avgeeks.com) before project use;
-    the third (an educational film series upload) has no rights signal at all. None of
-    that batch should ship without either that permission or a rights-confirmed
-    replacement — **do not use the original 9 stills as-is.**
-  - **Resolved with a sourcing list, not by clearing the original clips.** Identified
-    genuinely public-domain replacement footage instead, verified the same way (API
-    `licenseurl` check, not just page appearance or collection reputation): Prelinger
-    Archives titles *A Trip Down Market Street* (1906, CC0), *Coney Island* (1940, PD),
-    *The City* (1939, PD), *How a Watch Works* (1949, PD), *Lucky Strike: Square Dance*
-    (1948, PD); NASA titles *8k_Earth_FullMoon_set* (CC0), *Apollo 16mm Onboard Select
-    Views* (PD), *Expedition 66 U.S. Spacewalk* (CC0). Exact archive.org URLs and a
-    suggested citation format are in the conversation that produced this list — pull
-    them back out via `WebFetch`/`archive.org/metadata/<id>` if needed rather than
-    re-deriving. **User is capturing new stills from this material next.**
-  - Once the new stills exist: build the hero + gallery + blend-mode-thumbnail set from
-    them, add a **Credits / Footage sources** note in the README citing each clip
-    (title, year, archive.org URL, license), and only then remove the original
-    unresolved-rights batch from the Desktop folder (don't delete before the new set
-    is confirmed good).
-- **Sample GIF / clip as a README illustration** — the motion counterpart to the stills
-  above; do it after them, since a still already fixes the "cannot see what it does"
-  problem at a fraction of the effort. review options for showing the tool
-  in motion at the top of the README, since text alone doesn't convey what it does.
-  Source material comes from the OBS workflow above. Points to weigh: an animated GIF
-  is the only format that autoplays inline on GitHub, but it is heavyweight (keep it
-  short and small — a few seconds, modest dimensions, budget well under ~10 MB or the
-  README feels broken on slow connections); alternatives are a poster image linking to
-  a video, or GitHub's own video upload (drag an MP4 into a README edit — it renders
-  as a player, but only on github.com, and it breaks anywhere else the Markdown is
-  read). Also decide where the file lives (an `assets/` folder in-repo vs an external
-  host) and whether to show several short looks or one representative one. Ties into
-  the starter-presets item — a GIF of a preset is a good showcase for both.
+- ~~**Illustrative reference images**~~ — **done (2026-08-04).** User captured 8 new
+  stills from the verified public-domain/CC-attributed footage list (see sourcing
+  history below) and supplied them from `~/Desktop/Video Performance Still/Repo
+  Stills/`. Built two 2×2 grids with ffmpeg (1296×732, dark gutters matching GitHub's
+  dark theme, JPEG q3 — 3 MB of PNGs down to ~500 KB), saved to `docs/images/` (outside
+  Vite's build, safe for the Pages deploy), placed in the README after the title and
+  again after the Controls section. Added a **Credits** section above Licence citing
+  all 8 sources by title/author/license, each re-verified against the Commons API
+  (`extmetadata` → `LicenseShortName`/`Artist`) rather than trusted from the earlier
+  sourcing list: *A Trip Down Market Street* (1906, PD), *Boxing* (1892, PD), *Trail
+  running in Spain* (CC BY 3.0), *Athletics Men's 200m Final* — Universiade 2013 (CC BY
+  3.0), *WikiOrchestra — Karliku* (CC BY 3.0), *Drone video of a wind turbine, Estonia*
+  (CC BY-SA 4.0), *Butterfly stroke, from underwater* (CC BY-SA 4.0), *Bagurumba,
+  Assam's butterfly dance* (CC BY-SA 4.0). Original unresolved-rights 9-still batch was
+  never used and can be deleted from the Desktop folder whenever convenient — no longer
+  referenced by anything.
+  - **Sourcing history (kept for reference):** the first batch of 9 screenshots used
+    stock video whose rights checked out empty via the Archive.org metadata API
+    (`OABreathing`, `oa1stcameratestnbc`, `discoveringthemusicofafrica_202605` — none
+    had a `licenseurl`/`rights` value, two explicitly required contacting the uploader).
+    Replaced with a verified public-domain/CC sourcing list instead of clearing those
+    clips — Prelinger Archives and NASA titles, plus (once CC BY/CC BY-SA were
+    confirmed acceptable) selections from Wikimedia Commons — each checked via API
+    rather than page appearance or collection reputation.
+- ~~**Sample GIF / clip as a README illustration**~~ — **discarded (2026-08-04, user
+  call).** The stills above already solve the "cannot see what it does" problem; not
+  pursuing the GIF/video version.
 ### Documentation rework
 
 1. ~~**USER-GUIDE — one clear track per operating system**~~ — **done (2026-08-04).**
@@ -242,8 +220,14 @@ Rough, grouped by theme.
   repo description was updated at the same time to match the current naming ("visual
   engine … alongside any DAW", was "visual instrument … alongside DAW"). Topics only
   become publicly searchable once the repo is public.
-- **Blend-mode thumbnails for the guide** — a before/after image per mode would beat
-  the prose table. Pairs with the README GIF item.
+- ~~**Blend-mode thumbnails for the guide**~~ — **discarded (2026-08-04, user call).**
+- **Include the Authorship Meter, after making public** — embed the disclosure
+  component from the parallel governance project (`projects/authorship-meter/`, public
+  at `luispsalas.github.io/authorship-meter/`) declaring how much of this app came from
+  human vs. AI across its five stages (Conception · Structure · Production · Curation ·
+  Verification). Blocked on making this repo public first — do after that decision, not
+  before. Declared levels are the author's call, not something to infer from commit
+  history.
 
 ## Housekeeping
 - **Purge the local git backup refs (review first)** — the email rewrite left the old
