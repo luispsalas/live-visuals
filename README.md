@@ -4,10 +4,9 @@ A lightweight, browser-based **audio-reactive visual engine** for live performan
 Run it alongside any DAW: it listens to your audio and projects generative visuals
 full-screen on a second display, driven live by a MIDI controller or the keyboard.
 
-**En español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
-para actuaciones en vivo. Úsalo junto a cualquier DAW: escucha tu audio y proyecta
-visuales generativos a pantalla completa en una segunda pantalla, controlados en vivo
-con un controlador MIDI o el teclado.
+**Español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
+para actuaciones en vivo y grabación experimental Se puede usar con cualquier salida de audio (DAWs, micrófono, entrada directa) y proyecta
+visuales generativos a pantalla completa en una segunda pantalla. Compatible con controladores MIDI.
 *→ [Guía del usuario en español](USER-GUIDE.es.md) (próximamente).*
 
 ![Four frames from the output window: a swimmer keyed into magenta, an abstract generative bloom, a guitarist through feedback trails, and archival street footage with an inverted-edge look](docs/images/grid-sources.jpg)
