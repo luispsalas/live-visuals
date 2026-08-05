@@ -8,7 +8,7 @@ MIDI controller compatible.
 **Español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
 para actuaciones en vivo y grabación experimental. Se puede usar con cualquier salida de audio (DAWs, música, micrófono, entrada directa) y proyecta
 visuales generativos a pantalla completa en una segunda pantalla. Compatible con controladores MIDI.
-*→ [Guía del usuario en español](USER-GUIDE.es.md) (próximamente).*
+*→ [Guía del usuario en español](USER-GUIDE.es.md).*
 
 ![Four frames from the output window: a swimmer keyed into magenta, an abstract generative bloom, a guitarist through feedback trails, and archival street footage with an inverted-edge look](docs/images/grid-sources.jpg)
 

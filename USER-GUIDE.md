@@ -1,5 +1,7 @@
 # Live Audio-Reactive Visuals — User Guide
 
+*[Versión en español](USER-GUIDE.es.md)*
+
 This app listens to your music and paints moving visuals in time with it, which you
 send to a projector or second screen. You perform it live from a MIDI controller —
 riding a fader or knob to sweep an effect, hitting a pad to fire a saved look — or,
