@@ -40,7 +40,9 @@ so here is exactly what each one is and what it does:
 
 **Nothing leaves your computer.** The app has no server, no account and no analytics —
 it makes no internet connections at all. Everything is processed on your machine and
-thrown away frame by frame. Saved presets live in your own browser.
+thrown away frame by frame. Saved presets live only in this browser's local
+storage — tied to this browser and computer, gone if you clear this site's browser
+data, and not available on a different browser or machine.
 
 You can review or revoke any of this at any time by clicking the icon at the left of
 Chrome's address bar. If you never use the camera or audio features, you are never
@@ -197,7 +199,10 @@ put every look/effect control back to its default. It asks you to confirm first,
 it leaves your tempo, Quality setting, MIDI mappings, and saved presets untouched.
 
 > **Starter presets** are on the to-do list. For now the preset list starts empty —
-> build a look you like and save it, and it will still be there next time.
+> build a look you like and save it, and it will still be there next time **on this
+> same browser and computer**. Presets aren't stored anywhere online — they live only
+> in this browser's local storage, so they won't follow you to a different browser, a
+> different computer, or survive clearing this browser's site data.
 
 ---
 

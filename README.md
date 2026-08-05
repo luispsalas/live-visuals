@@ -1,8 +1,9 @@
 # Live Audio-Reactive Visuals
 
-A lightweight, browser-based **audio-reactive visual engine** for live performance.
-Run it alongside any DAW: it listens to your audio and projects generative visuals
-full-screen on a second display, driven live by a MIDI controller or the keyboard.
+A lightweight, browser-based **audio-reactive visual engine** for live performance
+and experimental recording. Works with any audio source — a DAW, music, microphone,
+or direct input — and projects generative visuals full-screen on a second display.
+MIDI controller compatible.
 
 **Español:** Un motor de visuales audio-reactivos, ligero y basado en navegador,
 para actuaciones en vivo y grabación experimental. Se puede usar con cualquier salida de audio (DAWs, música, micrófono, entrada directa) y proyecta
@@ -86,7 +87,7 @@ that can be dropped on any web host — there is no server component.
 - **Compositing** — how A and B overlap: **blend modes** (add / screen / multiply / difference / …) and a **key** that reveals one feed through another. Two key modes: **Luma** (matte from brightness — or from the feedback buffer) and **Difference** (press **Capture BG** on an empty shot, and afterwards only what *changed* — you walking in — lets the other feed through; no green screen needed). **Crossfade is the master level for both the blend and the key** — at 0 neither has anything to show; the panel warns you when Key is on with Crossfade still at 0.
 - **Motion** — a second input axis alongside the audio: the app frame-differences a feed, and its movement becomes a 0..1 signal you can **route onto any parameter** (with depth), stacking with the sliders and BPM loops. **Watch** picks the feed — **Camera** (tick **Enable** and it turns the camera on for you) or **Video file** (movement *within* a loaded clip drives the signal instead). Watch the meter and set **Sensitivity** for the feed you chose.
 - **BPM loops** — tempo-synced motion as counterpoint to the audio reactivity: set the **BPM** (or Tap), then loop Hue / Sat / Crossfade / Feedback / Key over ¼-beat–8-bar cycles, with ramp / sine / triangle / square shapes.
-- **My presets** — save and recall full looks (stored in the browser; number keys **1–8** fire the first eight; each is MIDI-mappable).
+- **My presets** — save and recall full looks (stored in this browser's local storage — not synced anywhere, so a different browser or computer starts empty and clearing this site's browser data erases them; number keys **1–8** fire the first eight; each is MIDI-mappable).
 - **MIDI** — Connect, then **Learn** any parameter or preset onto a control. Works with any controller: pads or keyboard keys (Note On) trigger presets; knobs, faders, or the mod wheel (CC) drive parameters. Multiple devices at once are fine.
 - **Output** — the top-bar button opens the projector window (**perform mode**: the panel slims down to share the screen with your DAW, and a low-power mini preview stays in the corner as a confidence monitor; close the output window to return to **design mode**, with the full-size preview). **Quality** (render scale) buys GPU headroom — see Performance below for what it actually changes.
 - **Reset** — top bar, next to Open output window. Puts every look/effect control back to its default in one click (with a confirmation first). Leaves tempo, Quality, MIDI mappings, and saved presets untouched — a clean slate or panic button during a set.
@@ -176,7 +177,8 @@ fullscreen.
 **Nothing you feed this app ever leaves your computer.** There is no server, no
 account, no analytics, and no network calls of any kind — audio, camera and video are
 processed locally on your GPU and discarded. Saved presets and MIDI mappings live in
-your own browser's storage.
+your own browser's local storage — tied to this browser and computer, and gone if you
+clear this site's browser data or switch to a different browser or machine.
 
 - **Permissions:** Chrome will ask for microphone access (that is how it reads a
   virtual audio cable), screen-share access if you use **System audio** (the video is
