@@ -638,13 +638,18 @@ async function startSystemAudio() {
 
 const STATIC_FEATURES = { bass: 0.4, mid: 0.4, treble: 0.4, rms: 0.35, onset: false, onsetEnv: 0, bpm: 0 };
 
+// setInterval, not requestAnimationFrame: rAF is throttled hard by Chrome once
+// the control window is occluded (e.g. the output window opened fullscreen on
+// top of it), which would silently stall BPM loops and Motion in this mode.
+// analyzeFrame() (the real-audio path below) sidesteps the same problem by
+// running on the audio thread instead — no audio here, so setInterval is the
+// equivalent occlusion-proof clock.
 function noSoundFrame() {
   if (!noSoundActive) return;
   const now = performance.now() / 1000;
   const m = updateMotion(now);
   channel.send('features', { ...STATIC_FEATURES, ...m });
   sendDynamics(now);
-  noSoundRafId = requestAnimationFrame(noSoundFrame);
 }
 
 function startNoSound() {
@@ -654,12 +659,13 @@ function startNoSound() {
   ui.systemAudio.classList.remove('on');
   ui.status.textContent = 'No sound mode — engine running, BPM loops active.';
   noSoundFrame();
+  noSoundRafId = setInterval(noSoundFrame, 1000 / 60);
 }
 
 function stopNoSound() {
   if (!noSoundActive) return;
   noSoundActive = false;
-  cancelAnimationFrame(noSoundRafId);
+  clearInterval(noSoundRafId);
   ui.noSound.classList.remove('on');
 }
 

@@ -210,6 +210,13 @@ run through the app's effects.
 
 Notable fixes, most recent first.
 
+- **2026-08-05** — Fixed **No sound mode's BPM loops and Motion routing stalling once
+  the output window took over the screen.** Its clock ran on `requestAnimationFrame`,
+  which Chrome throttles hard once the control window is occluded (exactly what
+  happens when the output window opens on top of it) — the real-audio path already
+  avoided this by running on the audio thread instead, but No sound mode's driving
+  loop was missed. Switched to `setInterval`, which isn't subject to the same
+  occlusion throttling.
 - **2026-08-05** — Fixed two related bugs where the output window could silently lose
   content if opened *after* setup instead of before. **Video files weren't resent to a
   window that attached late**, so Source B showed nothing there — which could look like
