@@ -22,6 +22,17 @@ let features = null;
 let outputWin = null;
 let cameraOn = false;
 let cameraDeviceId = null; // chosen camera (empty = default); not saved in presets
+// The captured background plate lives on the GPU in whichever window captured it,
+// so it can't be relayed to a window that attaches later. Tracked locally (not
+// saved in presets) so a late-attaching output window can be flagged — see the
+// request-state handler and setKeyRefStatus() below.
+let keyRefCaptured = false;
+// A picked video file is a one-shot 'video-file' broadcast, like the camera's
+// on/off state — but unlike the camera (which a late window can just reopen via
+// getUserMedia), there's no live source to re-request, so the file itself is
+// cached here and resent on request-state. Not saved in presets: it's a File
+// object, and browsers don't let a saved preset silently re-pick a local file.
+let lastVideoFile = null;
 
 // App state mirrored to the output window (reactivity + loops are used locally).
 const state = {
@@ -98,6 +109,7 @@ const ui = {
   keyCapture: el('key-capture'),
   keyClear: el('key-clear'),
   keyBgStatus: el('key-bg-status'),
+  keyBgStaleHint: el('key-bg-stale-hint'),
   keyThreshold: el('key-threshold'),
   keySoftness: el('key-softness'),
   keyInvert: el('key-invert'),
@@ -340,6 +352,10 @@ function syncKeyMode() {
 
 function setKeyRefStatus(captured) {
   ui.keyBgStatus.textContent = captured ? 'captured' : 'not captured';
+  keyRefCaptured = captured;
+  // A fresh capture (or a clear) resolves any pending "new window needs its own
+  // plate" warning — either every attached window now has one, or none does.
+  ui.keyBgStaleHint.classList.remove('show');
 }
 
 function enableCamera(on) {
@@ -680,6 +696,11 @@ channel.on((type) => {
     sendState();
     channel.send('quality', { value: quality });
     if (cameraOn) channel.send('camera', { on: true, deviceId: cameraDeviceId });
+    if (lastVideoFile) channel.send('video-file', lastVideoFile);
+    // The background plate can't travel with this resend (it's GPU-local to
+    // whichever window captured it), so a late-attaching window is silently
+    // missing one. Flag it rather than guess — see setKeyRefStatus().
+    if (keyRefCaptured) ui.keyBgStaleHint.classList.add('show');
   }
 });
 
@@ -820,6 +841,7 @@ navigator.mediaDevices.addEventListener?.('devicechange', () => refreshCameras()
 ui.videoFile.addEventListener('change', () => {
   const file = ui.videoFile.files[0];
   if (!file) return;
+  lastVideoFile = file;
   channel.send('video-file', file); // Blob travels via structured clone
   state.slotB = VIDEO_INDEX;
   ui.slotB.value = String(VIDEO_INDEX);

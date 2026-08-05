@@ -76,11 +76,15 @@
       #motion-status { font-size: 11px; color: var(--muted); }
 
       /* The background-plate controls only apply to the difference key. */
-      body:not(.diffkey) #key-bg-row { display: none; }
+      body:not(.diffkey) #key-bg-row, body:not(.diffkey) #key-bg-stale-hint { display: none; }
       /* Crossfade is the key's master level (amount *= mask happens on top of uMix in
          the shader) — shown only while it would silently zero the key out. */
       #key-mix-hint { display: none; font-size: 11px; color: #e8b04d; }
       #key-mix-hint.show { display: flex; }
+      /* The capture plate lives on the GPU per window, so a newly opened output
+         window never inherits one — see the request-state handler in main.js. */
+      #key-bg-stale-hint { display: none; font-size: 11px; color: #e8b04d; }
+      #key-bg-stale-hint.show { display: flex; }
       #key-bg-status { font-size: 11px; color: var(--muted); }
       #status { color: var(--accent); font-size: 12px; }
       #bpm-detected, #midi-status { font-size: 11px; color: var(--muted); }
@@ -159,6 +163,7 @@
         <div class="row"><label>Key mode</label><select id="key-mode"></select></div>
         <div class="row" id="key-mix-hint">⚠ Crossfade is the master level for the key — raise it above 0 to see the key take effect.</div>
         <div class="row" id="key-bg-row"><label>Background</label><button id="key-capture">Capture BG</button><button id="key-clear">Clear</button><span id="key-bg-status">not captured</span></div>
+        <div class="row" id="key-bg-stale-hint">⚠ A new output window just opened — it has no background plate yet. Click Capture BG again while it's open.</div>
         <div class="row"><label>Key thresh</label><input id="key-threshold" type="range" min="0" max="1" step="0.01" value="0.5" /></div>
         <div class="row"><label>Key soft</label><input id="key-softness" type="range" min="0" max="0.5" step="0.01" value="0.1" /></div>
       </section>

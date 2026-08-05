@@ -206,6 +206,20 @@ Wikimedia Commons/Internet Archive:
 None of the source footage is redistributed here — only visuals derived from it while
 run through the app's effects.
 
+## Changelog
+
+Notable fixes, most recent first.
+
+- **2026-08-05** — Fixed two related bugs where the output window could silently lose
+  content if opened *after* setup instead of before. **Video files weren't resent to a
+  window that attached late**, so Source B showed nothing there — which could look like
+  "keying is broken" in any key mode, since the thing meant to be revealed was simply
+  missing. **The Difference key's captured background plate lives on the GPU in
+  whichever window captured it** and can't be relayed to a new one; a late-attaching
+  output window now shows a warning (*"A new output window just opened — it has no
+  background plate yet"*) instead of silently keying nothing. Luma key and camera-based
+  sources were unaffected.
+
 ## Licence
 
 [MIT](LICENSE) — free to use, modify, and share, including commercially; just keep
