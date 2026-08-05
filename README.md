@@ -210,13 +210,23 @@ run through the app's effects.
 
 Notable fixes, most recent first.
 
+- **2026-08-05** — The `setInterval` fix below held up for a partially-covering output
+  window, but **hue/BPM-loop motion still stalled once that window was maximized or
+  made fullscreen** — Chrome applies a stricter throttle once the control window is
+  *fully* covered, and that one clamps `setInterval` too, not just
+  `requestAnimationFrame`. No sound mode's clock now runs the same silent-audio-thread
+  trick the real-audio path already used (`AudioEngine.startSilentClock()` — a muted
+  oscillator through a `ScriptProcessorNode`), which isn't subject to either kind of
+  throttling. Verified continuing to fire, and the hue loop continuing to sweep, under
+  the most aggressive backgrounding a headless test could produce.
 - **2026-08-05** — Fixed **No sound mode's BPM loops and Motion routing stalling once
   the output window took over the screen.** Its clock ran on `requestAnimationFrame`,
   which Chrome throttles hard once the control window is occluded (exactly what
   happens when the output window opens on top of it) — the real-audio path already
   avoided this by running on the audio thread instead, but No sound mode's driving
   loop was missed. Switched to `setInterval`, which isn't subject to the same
-  occlusion throttling.
+  occlusion throttling. *(Superseded by the entry above — held up for partial
+  occlusion only.)*
 - **2026-08-05** — Fixed two related bugs where the output window could silently lose
   content if opened *after* setup instead of before. **Video files weren't resent to a
   window that attached late**, so Source B showed nothing there — which could look like

@@ -53,6 +53,29 @@ export class AudioEngine {
     return this._setup(new MediaStream(audio));
   }
 
+  // No sound mode: no real input, but BPM loops and Motion still need a clock that
+  // survives the control window being hidden/occluded — exactly the problem the
+  // audio-thread clock below already solves. A silent oscillator stands in for a
+  // real input purely to give the ScriptProcessorNode something to pull from;
+  // requestAnimationFrame/setInterval can't offer the same guarantee (both are
+  // throttled by Chrome once another window fully covers this one).
+  async startSilentClock() {
+    this.ctx = new AudioContext();
+    if (this.ctx.state === 'suspended') await this.ctx.resume();
+
+    const osc = this.ctx.createOscillator();
+    osc.frequency.value = 440;
+    osc.start();
+
+    this.clock = this.ctx.createScriptProcessor(1024, 1, 1);
+    osc.connect(this.clock);
+    const sink = this.ctx.createGain();
+    sink.gain.value = 0; // silent — same trick as _setup()'s clock sink
+    this.clock.connect(sink);
+    sink.connect(this.ctx.destination);
+    this.clock.onaudioprocess = () => { if (this.onFrame) this.onFrame(); };
+  }
+
   async _setup(stream) {
     this.stream = stream;
     this.ctx = new AudioContext();

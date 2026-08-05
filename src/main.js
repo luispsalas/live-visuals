@@ -77,7 +77,6 @@ let quality = 1; // render-scale, per-machine perf setting (kept out of presets)
 let motionLevel = 0; // latest smoothed motion reading, used by the routes
 const motionRouteEls = [];
 let noSoundActive = false;
-let noSoundRafId = null;
 const loopRowEls = []; // DOM refs per loop row, indexed alongside state.loops
 
 const el = (id) => document.getElementById(id);
@@ -638,12 +637,14 @@ async function startSystemAudio() {
 
 const STATIC_FEATURES = { bass: 0.4, mid: 0.4, treble: 0.4, rms: 0.35, onset: false, onsetEnv: 0, bpm: 0 };
 
-// setInterval, not requestAnimationFrame: rAF is throttled hard by Chrome once
-// the control window is occluded (e.g. the output window opened fullscreen on
-// top of it), which would silently stall BPM loops and Motion in this mode.
-// analyzeFrame() (the real-audio path below) sidesteps the same problem by
-// running on the audio thread instead — no audio here, so setInterval is the
-// equivalent occlusion-proof clock.
+// Driven by audio.startSilentClock() (a silent oscillator through a
+// ScriptProcessorNode), not requestAnimationFrame or setInterval: Chrome
+// throttles both of those once the output window fully covers the control
+// window (maximized or fullscreen) — a setInterval-based version of this
+// looked fixed for a partially-covering window but still stalled once the
+// output window went fullscreen. The audio thread has no such throttling,
+// which is exactly why analyzeFrame() (the real-audio path below) already
+// used it — this reuses the same trick with no real input.
 function noSoundFrame() {
   if (!noSoundActive) return;
   const now = performance.now() / 1000;
@@ -652,20 +653,22 @@ function noSoundFrame() {
   sendDynamics(now);
 }
 
-function startNoSound() {
+async function startNoSound() {
+  audio.stop(); // in case Start/System audio was running — modes are mutually exclusive
   noSoundActive = true;
   ui.noSound.classList.add('on');
-  ui.start.classList.remove('on');       // the three audio modes are mutually exclusive
+  ui.start.classList.remove('on');
   ui.systemAudio.classList.remove('on');
   ui.status.textContent = 'No sound mode — engine running, BPM loops active.';
-  noSoundFrame();
-  noSoundRafId = setInterval(noSoundFrame, 1000 / 60);
+  audio.onFrame = noSoundFrame;
+  await audio.startSilentClock();
 }
 
 function stopNoSound() {
   if (!noSoundActive) return;
   noSoundActive = false;
-  clearInterval(noSoundRafId);
+  audio.stop();
+  audio.onFrame = null;
   ui.noSound.classList.remove('on');
 }
 
