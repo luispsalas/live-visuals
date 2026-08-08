@@ -247,7 +247,7 @@ declaration — how much came from a human vs. an AI model, by process stage. Se
 by the author (with LLM assistance) and re-issued whenever the project changes materially.
 
 <a href="https://luispsalas.github.io/authorship-meter/declarations/live-visuals.html">
-  <img src="docs/images/authorship-meter.png" width="440" alt="Authorship Meter for Live Audio-Reactive Visuals: Co-created — 40% human, 60% AI, broken down across Conception, Structure, Production, Curation, and Verification. Click for the interactive version.">
+  <img src="docs/images/authorship-meter.png" width="460" alt="Authorship Meter for Live Audio-Reactive Visuals: Co-created — 40% human, 60% AI. Click for the interactive version with the per-stage breakdown.">
 </a>
 
 **[View the interactive declaration →](https://luispsalas.github.io/authorship-meter/declarations/live-visuals.html)**
