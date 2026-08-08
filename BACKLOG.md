@@ -221,18 +221,13 @@ Rough, grouped by theme.
   engine … alongside any DAW", was "visual instrument … alongside DAW"). Topics only
   become publicly searchable once the repo is public.
 - ~~**Blend-mode thumbnails for the guide**~~ — **discarded (2026-08-04, user call).**
-- ~~**Include the Authorship Meter, after making public**~~ — **done (2026-08-08).**
-  Assessed via the playbook's Part A (git history + author's account), author-confirmed
-  on the two history-blind stages (Conception, Verification). Result: Conception 2 ·
-  Structure 4 · Production 4 · Curation 4 · Verification 3 → composite 3.4, ~60% AI /
-  40% human, band *Co-created* (leaning AI-led, human-directed). `public/authorship.json`
-  + `public/authorship.html` ship to the site root; the live widget links to the hosted
-  `authorship-meter.js` (link-not-vendor while the format is pre-1.0). README carries the
-  intro line + `## Authorship` section pointing at the live page. **Re-issue when any
-  stage would move ≥1** (e.g. a new production pass, or the author taking over more of the
-  work) — bump `assessed_at`/`subject.version`, optionally prepend the old one to a
-  `history` array. `subject.version` is pinned to the assessed commit (`09c047c`), not
-  auto-bumped by later doc edits.
+- **Include the Authorship Meter, after making public** — embed the disclosure
+  component from the parallel governance project (`projects/authorship-meter/`, public
+  at `luispsalas.github.io/authorship-meter/`) declaring how much of this app came from
+  human vs. AI across its five stages (Conception · Structure · Production · Curation ·
+  Verification). Blocked on making this repo public first — do after that decision, not
+  before. Declared levels are the author's call, not something to infer from commit
+  history.
 
 ## Housekeeping
 - **Purge the local git backup refs (review first)** — the email rewrite left the old
