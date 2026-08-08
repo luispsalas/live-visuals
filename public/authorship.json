@@ -1,0 +1,22 @@
+{
+  "version": "1.1",
+  "subject": {
+    "name": "Live Audio-Reactive Visuals",
+    "type": "code",
+    "url": "https://luispsalas.github.io/live-visuals/",
+    "source": "https://github.com/luispsalas/live-visuals",
+    "version": "09c047c",
+    "updated": "2026-08-05"
+  },
+  "assessed_at": "2026-08-08",
+  "stages": {
+    "conception":   { "level": 2, "note": "The tool was conceived by the author for their own live-performance practice — a browser VJ instrument to run alongside a DAW; the model sharpened scope and proposed features within that brief." },
+    "structure":    { "level": 4, "note": "The two-window BroadcastChannel architecture and the shader compositor/feedback/source module layout were model-proposed and landed whole in the initial commit; the author set the functional requirements they had to satisfy." },
+    "production":   { "level": 4, "note": "All engine code, shaders, UI, and docs were model-generated to the author's spec across 45 of 48 commits, reviewed and redirected commit by commit rather than accepted wholesale." },
+    "curation":     { "level": 4, "note": "The model performed the revision, restructure, and cleanup passes; the author set the criteria and made every keep/cut/redirect call (e.g. trimming the intro, choosing fix approach B, stripping em dashes from the Spanish guide)." },
+    "verification": { "level": 3, "note": "The model ran the programmatic checks (dev-server console, BroadcastChannel message sampling, hue-sweep timing); the author found bugs through real-world use and performs the two-window/fullscreen testing the sandbox cannot, and signs off." }
+  },
+  "tools": ["Claude Sonnet 5 (Anthropic)", "Claude Opus (Anthropic)"],
+  "declared_by": "Luis Salas",
+  "method": "llm-assisted"
+}

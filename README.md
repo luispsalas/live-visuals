@@ -10,6 +10,9 @@ para actuaciones en vivo y grabación experimental. Se puede usar con cualquier 
 visuales generativos a pantalla completa en una segunda pantalla. Compatible con controladores MIDI.
 *→ [Guía del usuario en español](USER-GUIDE.es.md).*
 
+This project carries an [Authorship Meter](#authorship) declaration — human/AI
+contribution, disclosed by stage.
+
 ![Four frames from the output window: a swimmer keyed into magenta, an abstract generative bloom, a guitarist through feedback trails, and archival street footage with an inverted-edge look](docs/images/grid-sources.jpg)
 
 ## Start here
@@ -236,6 +239,16 @@ Notable fixes, most recent first.
   output window now shows a warning (*"A new output window just opened — it has no
   background plate yet"*) instead of silently keying nothing. Luma key and camera-based
   sources were unaffected.
+
+## Authorship
+
+This project publishes a live [Authorship Meter](https://github.com/luispsalas/authorship-meter)
+declaration — how much came from a human vs. an AI model, by process stage.
+
+**[View the current declaration →](https://luispsalas.github.io/live-visuals/authorship.html)**
+
+Self-assessed by the author (with LLM assistance) and re-issued whenever the
+project changes materially.
 
 ## Licence
 
