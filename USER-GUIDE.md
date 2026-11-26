@@ -1,11 +1,11 @@
-# Live Audio-Reactive Visuals — User Guide
+# Live Audio-Reactive Visuals: User Guide
 
 *[Versión en español](USER-GUIDE.es.md)*
 
 This app listens to your music and paints moving visuals in time with it, which you
-send to a projector or second screen. You perform it live from a MIDI controller —
-riding a fader or knob to sweep an effect, hitting a pad to fire a saved look — or,
-with no MIDI gear at hand, by snapping between up to 8 saved looks with the number
+send to a projector or second screen. You perform it live from a MIDI controller,
+riding a fader or knob to sweep an effect or hitting a pad to fire a saved look. With
+no MIDI gear at hand, you can snap between up to 8 saved looks with the number
 keys on your keyboard.
 
 ---
@@ -13,7 +13,7 @@ keys on your keyboard.
 ## 1. Getting started
 
 **All you need is [Google Chrome](https://www.google.com/chrome/).** The app runs
-inside the browser — there is nothing to install and no account to create.
+inside the browser, so there is nothing to install and no account to create.
 
 **Open the app here: [https://luispsalas.github.io/live-visuals/](https://luispsalas.github.io/live-visuals/)**
 
@@ -24,8 +24,8 @@ sliders, and you have already used most of it.
 That is genuinely all that is required to explore. Everything below is optional and
 only needed for specific things.
 
-> **If you were given a folder of files instead** — no link, just files on your
-> computer — see *Running from a folder* at the end of this guide.
+> **If you were given a folder of files instead** (no link, just files on your
+> computer), see *Running from a folder* at the end of this guide.
 
 ---
 
@@ -36,15 +36,15 @@ so here is exactly what each one is and what it does:
 
 | Chrome asks | Why the app needs it | What actually happens |
 |---|---|---|
-| **"Use your microphone?"** | This is the only way a browser can receive audio — including from the virtual cable carrying your music. | It reads whichever input **you** pick in the dropdown. It is not recording you, and nothing is sent anywhere. |
+| **"Use your microphone?"** | This is the only way a browser can receive audio, including from the virtual cable carrying your music. | It reads whichever input **you** pick in the dropdown. It is not recording you, and nothing is sent anywhere. |
 | **"Share your screen?"** | Only if you click **System audio**. Chrome has no "just give me the sound" option, so it uses the screen-share dialog to hand over audio. | The app **immediately discards the video** and keeps only the sound. |
 | **"Use your camera?"** | Only if you turn on **Camera** or **Motion**. | The picture is drawn on screen and used for motion detection, then discarded. |
 
-**Nothing leaves your computer.** The app has no server, no account and no analytics —
-it makes no internet connections at all. Everything is processed on your machine and
+**Nothing leaves your computer.** The app has no server, no account and no analytics.
+It makes no internet connections at all. Everything is processed on your machine and
 thrown away frame by frame. Saved presets live only in this browser's local
-storage — tied to this browser and computer, gone if you clear this site's browser
-data, and not available on a different browser or machine.
+storage. They are tied to this browser and computer, are gone if you clear this site's browser
+data, and are not available on a different browser or machine.
 
 You can review or revoke any of this at any time by clicking the icon at the left of
 Chrome's address bar. If you never use the camera or audio features, you are never
@@ -54,9 +54,9 @@ asked at all.
 
 ## 3. Making it react to your music
 
-The app cannot hear your computer's sound by itself — browsers aren't allowed to
-listen to whatever is playing. **Pick your system below and follow that one track —
-you don't need to read the other.**
+The app cannot hear your computer's sound by itself, because browsers aren't allowed to
+listen to whatever is playing. **Pick your system below and follow that one track.
+You don't need to read the other.**
 
 ### If you're on a Mac
 
@@ -66,7 +66,7 @@ nothing-to-install option:
 1. Click **System audio** in the Audio panel.
 2. In Chrome's share dialog, pick the **Chrome Tab** option, choose the tab your
    music is playing in, and tick **"Share tab audio."**
-3. Chrome shows a "sharing" bar while this is active — that's expected, ignore it.
+3. Chrome shows a "sharing" bar while this is active. That's expected, so ignore it.
 
 **Running a DAW** (Ableton, Logic, etc.)? Chrome on a Mac can only share a browser
 tab's audio, not your whole system, so you'll need a small free tool that routes
@@ -81,21 +81,21 @@ sound to the app instead:
    listens to it.
 5. In your DAW, set the audio **output** to that new Multi-Output Device.
 6. Back in the app: click **Refresh**, choose **BlackHole**, click **Start**. Play
-   something — the coloured meters should move.
+   something and the coloured meters should move.
 
 *Note: with a Multi-Output Device selected, the Mac's volume keys stop working. Use
 your DAW's volume or your speaker's own knob instead.*
 
 ### If you're on Windows
 
-This is the easier platform — **System audio** captures your whole computer, DAW
+This is the easier platform. **System audio** captures your whole computer, DAW
 included, with nothing to install:
 
 1. Click **System audio** in the Audio panel.
 2. In Chrome's share dialog, choose **Entire Screen**.
 3. Tick **"Also share system audio"** at the bottom, then click **Share**.
 4. The app now hears everything your computer plays, including your DAW. Chrome
-   shows a "sharing" bar while this is active — that's expected, ignore it.
+   shows a "sharing" bar while this is active. That's expected, so ignore it.
 
 If you'd rather have a permanent virtual audio cable instead (no dialog each time):
 
@@ -118,7 +118,7 @@ free) does the same job with a proper mixer window, at the cost of a longer setu
 
 ## 4. The two views: Design vs Performance
 
-The app has two modes. You don't set them manually — opening the output window
+The app has two modes. You don't set them manually. Opening the output window
 switches you into Performance, closing it returns you to Design.
 
 | | **Design view** (default) | **Performance view** |
@@ -132,7 +132,7 @@ To go back to Design view, just close the output window.
 
 ---
 
-## 5. Blend modes — how two visuals combine
+## 5. Blend modes: how two visuals combine
 
 You can run **two sources at once** (Source A and Source B) and choose how they
 overlap. The **Crossfade** slider fades between them; the **Blend** menu changes
@@ -140,41 +140,41 @@ the *math* of how they mix. Plain-language cheat sheet:
 
 | Blend | What it does | Reach for it when… |
 |---|---|---|
-| **Mix** | Plain crossfade — the slider dials from A to B | You want a simple blend, or you're using the luma key (keep it on Mix then) |
-| **Add** | Adds them together — everything gets brighter, colors pile toward white | Glows, light beams, bright energetic looks |
-| **Screen** | A gentler brighten — lifts the darks without blowing out as fast as Add | Layering a bright feed over a darker one softly |
-| **Multiply** | Multiplies them — everything gets darker; only areas bright in *both* survive | Tinting, shadows, moody darkening |
-| **Difference** | Shows where the two *disagree* — inverted, psychedelic edges | Glitchy, trippy, high-contrast moiré looks |
+| **Mix** | Plain crossfade. The slider dials from A to B | You want a simple blend, or you're using the luma key (keep it on Mix then) |
+| **Add** | Adds them together, so everything gets brighter and colors pile toward white | Glows, light beams, bright energetic looks |
+| **Screen** | A gentler brighten that lifts the darks without blowing out as fast as Add | Layering a bright feed over a darker one softly |
+| **Multiply** | Multiplies them, so everything gets darker; only areas bright in *both* survive | Tinting, shadows, moody darkening |
+| **Difference** | Shows where the two *disagree* as inverted, psychedelic edges | Glitchy, trippy, high-contrast moiré looks |
 | **Lighten** | Keeps whichever source is brighter, pixel by pixel | Letting the bright parts of each punch through |
 | **Darken** | Keeps whichever source is darker, pixel by pixel | Letting the dark parts dominate |
-| **Overlay** | Darks get darker, lights get lighter — a contrast boost | Punchy, high-contrast combinations |
+| **Overlay** | Darks get darker and lights get lighter, for a contrast boost | Punchy, high-contrast combinations |
 
 **Tip:** if you're using the **luma key** (revealing one feed through another's
-bright shapes — e.g. a camera through moving blobs), keep **Blend on Mix**. The
+bright shapes, e.g. a camera through moving blobs), keep **Blend on Mix**. The
 brightening modes (Screen/Add) fight the key and wash everything to white.
 
 **Also worth knowing:** **Crossfade doubles as the master level for the key too.**
-With Crossfade at 0, neither the blend nor the key has anything to show — the panel
+With Crossfade at 0, neither the blend nor the key has anything to show. The panel
 will warn you with a small note if you turn Key on while Crossfade is still at 0.
 
-*(Before/after thumbnails for each blend mode are planned — they'd explain this
+*(Before/after thumbnails for each blend mode are planned. They'd explain this
 faster than the words do.)*
 
 ---
 
-## 6. Motion — letting movement drive the visuals
+## 6. Motion: letting movement drive the visuals
 
 Alongside the music, the app can watch something *move* and turn that movement into
-its own control signal — a second, independent way to shape the visuals.
+its own control signal. That gives you a second, independent way to shape the visuals.
 
 1. In the **Motion** module, use **Watch** to pick what it looks at: your **Camera**,
    or a loaded **Video file** (if you choose Video file, movement *within* the clip
-   drives things — not your own movement).
+   drives things, not your own movement).
 2. Click **Enable**. If you picked Camera, this turns the camera on for you.
 3. Watch the **Motion** meter respond as things move in frame. Adjust **Sensitivity**
    if it feels too twitchy or too flat for your lighting/room.
 4. Below that, tick a row to **route** motion onto a parameter (Crossfade, Feedback,
-   Glitch) with a depth slider — motion now nudges that control on top of wherever
+   Glitch) with a depth slider. Motion now nudges that control on top of wherever
    its own slider sits.
 
 A good first thing to try: route Motion onto **Crossfade**. Standing still holds
@@ -191,7 +191,7 @@ Source A; moving pushes toward Source B.
    for how strongly the visuals punch to the beat.
 4. Set the **BPM** (type or tap it) and switch on a **BPM loop** for motion that
    rides the tempo.
-5. **Save** a look you like under **My presets** — recall it with its button, the
+5. **Save** a look you like under **My presets**, then recall it with its button, the
    number keys **1–8**, or a learned MIDI pad/key.
 6. When you're ready to play out, **open the output window**, send it to the
    projector, and go full screen.
@@ -200,9 +200,9 @@ Source A; moving pushes toward Source B.
 put every look/effect control back to its default. It asks you to confirm first, and
 it leaves your tempo, Quality setting, MIDI mappings, and saved presets untouched.
 
-> **Starter presets** are on the to-do list. For now the preset list starts empty —
-> build a look you like and save it, and it will still be there next time **on this
-> same browser and computer**. Presets aren't stored anywhere online — they live only
+> **Starter presets** are on the to-do list. For now the preset list starts empty.
+> Build a look you like and save it, and it will still be there next time **on this
+> same browser and computer**. Presets aren't stored anywhere online. They live only
 > in this browser's local storage, so they won't follow you to a different browser, a
 > different computer, or survive clearing this browser's site data.
 
@@ -214,10 +214,10 @@ Work down this list; the first two fix almost everything.
 
 1. **Lower the Quality slider** (Output module) to 60–75%, or 40–50% on a 4K
    projector. It renders internally at a smaller size and scales up to fill your
-   screen — the picture softens a little, but the motion gets much smoother.
+   screen. The picture softens a little, but the motion gets much smoother.
 2. **Plug the laptop in.** On battery, both Mac and Windows slow the graphics chip
    down dramatically. This is the most commonly missed cause.
-3. **Close other browser tabs and apps** — especially anything playing video, and
+3. **Close other browser tabs and apps**, especially anything playing video, and
    video calls.
 4. **Ease off the expensive controls:** **Feedback** and heavy **Pixelate** cost the
    most, and a camera or video source costs more than a generated one.
@@ -234,7 +234,7 @@ installer).
 onto the window, press Return. **Windows:** right-click the folder and choose *Open in
 Terminal*.
 
-Then type these two lines, pressing Return after each — the first is only needed the
+Then type these two lines, pressing Return after each. The first is only needed the
 very first time:
 
 ```
